@@ -25,7 +25,7 @@ const products = [
         unit: 'kilo',
         description: 'Jugosas y ricas en vitamina C, estas naranjas Valencia son ideales para zumos frescos y refrescantes. Cultivadas en condiciones climáticas óptimas que aseguran su dulzura y jugosidad.',
         origin: 'Región de Coquimbo',
-        emoji: '🍊',
+        image: 'img/naranjas.png',
         sustainable: true,
         reviews: [
             { user: 'Ana Silva', rating: 5, comment: 'Perfectas para jugo, muy dulces!' }
@@ -40,7 +40,7 @@ const products = [
         unit: 'kilo',
         description: 'Plátanos maduros y dulces, perfectos para el desayuno o como snack energético. Estos plátanos son ricos en potasio y vitaminas, ideales para mantener una dieta equilibrada.',
         origin: 'Ecuador',
-        emoji: '🍌',
+        image: 'img/platano.png',
         sustainable: false,
         reviews: [
             { user: 'Pedro Rodríguez', rating: 4, comment: 'Buenos plátanos, llegaron en perfecto estado.' }
@@ -55,7 +55,7 @@ const products = [
         unit: 'kilo',
         description: 'Zanahorias crujientes cultivadas sin pesticidas en la Región de O\'Higgins. Excelente fuente de vitamina A y fibra, ideales para ensaladas, jugos o como snack saludable.',
         origin: 'Región de O\'Higgins',
-        emoji: '🥕',
+        image: 'img/zanahoria.png',
         sustainable: true,
         reviews: [
             { user: 'Laura Martín', rating: 5, comment: 'Las mejores zanahorias que he probado!' }
@@ -70,7 +70,7 @@ const products = [
         unit: 'bolsa de 500g',
         description: 'Espinacas frescas y nutritivas, perfectas para ensaladas y batidos verdes. Estas espinacas son cultivadas bajo prácticas orgánicas que garantizan su calidad y valor nutricional.',
         origin: 'Región Metropolitana',
-        emoji: '🥬',
+        image: 'img/espinaca.png',
         sustainable: true,
         reviews: []
     },
@@ -83,7 +83,7 @@ const products = [
         unit: 'kilo',
         description: 'Pimientos rojos, amarillos y verdes, ideales para salteados y platos coloridos. Ricos en antioxidantes y vitaminas, estos pimientos añaden un toque vibrante y saludable a cualquier receta.',
         origin: 'Región de Valparaíso',
-        emoji: '🌶️',
+        image: 'img/pimenton.png',
         sustainable: true,
         reviews: [
             { user: 'José López', rating: 4, comment: 'Colores muy vivos y sabor excelente.' }
@@ -98,7 +98,7 @@ const products = [
         unit: 'frasco de 500g',
         description: 'Miel pura y orgánica producida por apicultores locales. Rica en antioxidantes y con un sabor inigualable, perfecta para endulzar de manera natural tus comidas y bebidas.',
         origin: 'Región del Maule',
-        emoji: '🍯',
+        image: 'img/miel.png',
         sustainable: true,
         reviews: [
             { user: 'Carmen Torres', rating: 5, comment: 'Miel deliciosa, se nota la calidad artesanal.' }
@@ -113,7 +113,7 @@ const products = [
         unit: 'bolsa de 1kg',
         description: 'Quinua orgánica de alta calidad, rica en proteínas y minerales. Perfecta para ensaladas, guisos y como alternativa saludable al arroz.',
         origin: 'Altiplano Boliviano',
-        emoji: '🌾',
+        image: 'img/quinua.png',
         sustainable: true,
         reviews: [
             { user: 'Roberto Díaz', rating: 5, comment: 'Excelente calidad, muy nutritiva.' }
@@ -128,7 +128,7 @@ const products = [
         unit: 'litro',
         description: 'Leche entera fresca de granjas locales que se dedican a la producción responsable y de calidad. Rica en calcio y nutrientes esenciales para toda la familia.',
         origin: 'Región de Los Lagos',
-        emoji: '🥛',
+        image: 'img/leches.png',
         sustainable: true,
         reviews: [
             { user: 'Francisca Herrera', rating: 4, comment: 'Leche muy fresca, se nota la diferencia.' }
