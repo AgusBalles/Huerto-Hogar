@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const map = L.map('map').setView([-33.45, -70.66], 5); // Centro en Chile
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
+            attribution: 'Nuestras Sucursales'
         }).addTo(map);
 
         // Marcadores de ejemplo
