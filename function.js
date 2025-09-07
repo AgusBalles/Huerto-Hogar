@@ -154,7 +154,35 @@ function getElement(id) {
     return elementsCache[id];
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+    // ...puedes tener otros inicializadores aquí...
 
+    // Inicializar el mapa Leaflet solo si existe el contenedor
+    const mapElement = document.getElementById('map');
+    if (mapElement) {
+        const map = L.map('map').setView([-33.45, -70.66], 5); // Centro en Chile
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Marcadores de ejemplo
+        const locations = [
+            { name: 'Santiago', coords: [-33.45, -70.66] },
+            { name: 'Puerto Montt', coords: [-41.47, -72.94] },
+            { name: 'Villarica', coords: [-39.27, -72.23] },
+            { name: 'Nacimiento', coords: [-37.50, -72.67] },
+            { name: 'Viña del Mar', coords: [-33.02, -71.55] },
+            { name: 'Valparaíso', coords: [-33.04, -71.62] },
+            { name: 'Concepción', coords: [-36.82, -73.05] }
+        ];
+
+        locations.forEach(loc => {
+            L.marker(loc.coords).addTo(map)
+                .bindPopup(`<b>${loc.name}</b>`);
+        });
+    }
+});
 document.addEventListener('DOMContentLoaded', function() {
     initializeApp();
 });
