@@ -425,14 +425,13 @@ function addToCart(productId, quantity = 1) {
             price: product.price,
             quantity: quantity,
             emoji: product.emoji,
-            unit: product.unit
+            unit: product.unit,
+            image: product.image
         });
     }
     
     updateCartUI();
     showNotification(`${product.name} agregado al carrito`, 'success');
-    
-
     loyaltyPoints += Math.floor(product.price * quantity / 100);
     updateLoyaltyUI();
 }
@@ -465,23 +464,20 @@ function updateCartUI() {
     const cartTotal = getElement('cartTotal');
     
     if (!cartItems || !cartCount || !cartTotal) return;
-    
  
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
     cartCount.textContent = totalItems;
-    
-
     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     cartTotal.textContent = total.toLocaleString();
     
-  
     if (cart.length === 0) {
         cartItems.innerHTML = '<p style="text-align: center; color: var(--text-medium); padding: 2rem;">Tu carrito está vacío</p>';
     } else {
         cartItems.innerHTML = cart.map(item => `
             <div class="cart-item">
+                <img src="${item.image || 'img/default.jpg'}" alt="${item.name}" style="width:40px;height:40px;border-radius:6px;margin-right:8px;">
                 <div class="cart-item-info">
-                    <h4>${item.emoji} ${item.name}</h4>
+                    <h4>${item.emoji ? item.emoji : ''} ${item.name}</h4>
                     <p>${item.price.toLocaleString()} CLP por ${item.unit}</p>
                 </div>
                 <div class="cart-item-controls">
