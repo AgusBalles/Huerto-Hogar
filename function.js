@@ -9,7 +9,7 @@ const products = [
         unit: 'kilo',
         description: 'Manzanas Fuji crujientes y dulces, cultivadas en el Valle del Maule. Perfectas para meriendas saludables o como ingrediente en postres. Estas manzanas son conocidas por su textura firme y su sabor equilibrado entre dulce y ácido.',
         origin: 'Valle del Maule',
-        emoji: '🍎',
+        image: 'img/manzana.png',
         sustainable: true,
         reviews: [
             { user: 'María González', rating: 5, comment: 'Excelente calidad, muy frescas!' },
@@ -254,7 +254,8 @@ function renderProducts(productsToRender = products) {
     productsGrid.innerHTML = productsToRender.map(product => `
         <div class="product-card" data-category="${product.category}" onclick="showProductModal('${product.id}')">
             <div class="product-image">
-                ${product.emoji}
+                <img src="${product.image || 'img/default.jpg'}" alt="${product.name}" style="width:100px;height:100px;border-radius:8px;">
+                ${product.emoji ? product.emoji : ''}
                 ${product.sustainable ? '<div class="product-badge">Orgánico</div>' : ''}
             </div>
             <div class="product-info">
