@@ -354,7 +354,7 @@ function showProductModal(productId) {
     const modalContent = getElement('productModalContent');
     modalContent.innerHTML = `
         <div class="product-modal-image">
-            ${product.emoji}
+            <img src="${product.image}" alt="${product.name}" style="width:120px;height:120px;border-radius:10px;">
         </div>
         <div class="product-modal-info">
             <h2>${product.name}</h2>
@@ -394,7 +394,6 @@ function showProductModal(productId) {
     getElement('productModal').classList.add('active');
     getElement('overlay').classList.add('active');
 }
-
 function closeProductModal() {
     getElement('productModal').classList.remove('active');
     getElement('overlay').classList.remove('active');
