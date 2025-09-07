@@ -128,7 +128,7 @@ const products = [
         unit: 'litro',
         description: 'Leche entera fresca de granjas locales que se dedican a la producción responsable y de calidad. Rica en calcio y nutrientes esenciales para toda la familia.',
         origin: 'Región de Los Lagos',
-        image: 'img/leches.png',
+        image: 'img/leche.png',
         sustainable: true,
         reviews: [
             { user: 'Francisca Herrera', rating: 4, comment: 'Leche muy fresca, se nota la diferencia.' }
