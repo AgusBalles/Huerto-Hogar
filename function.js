@@ -1,4 +1,3 @@
-
 const products = [
     {
         id: 'FR001',
@@ -143,9 +142,15 @@ let loyaltyPoints = 0;
 let currentFilter = 'all';
 let searchQuery = '';
 
+let registeredUsers = [];
+const savedUsers = localStorage.getItem('huertohogar_users');
+if (savedUsers) {
+    registeredUsers = JSON.parse(savedUsers);
+}
+
 
 const elementsCache = {};
-
+    
 // Función para obtener elementos del DOM con caché
 function getElement(id) {
     if (!elementsCache[id]) {
@@ -155,7 +160,6 @@ function getElement(id) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    // ...puedes tener otros inicializadores aquí...
 
     // Inicializar el mapa Leaflet solo si existe el contenedor
     const mapElement = document.getElementById('map');
@@ -587,62 +591,116 @@ function showOrderSummary(orderId, items, total) {
 
 function handleLogin(event) {
     event.preventDefault();
-    
-    const formData = new FormData(event.target);
-    const email = formData.get('email') || event.target.querySelector('input[type="email"]').value;
-    const password = formData.get('password') || event.target.querySelector('input[type="password"]').value;
-    
- 
-    if (email && password) {
-        currentUser = {
-            email: email,
-            name: email.split('@')[0],
-            address: '',
-            phone: ''
-        };
-        
-        showNotification(`¡Bienvenido, ${currentUser.name}!`, 'success');
-        toggleLogin();
-        updateUserUI();
-        loadUserData();
-    } else {
-        showNotification('Por favor completa todos los campos', 'error');
+
+    const form = event.target;
+    const emailInput = form.querySelector('input[type="email"]');
+    const passwordInput = form.querySelector('input[type="password"]');
+    let valid = true;
+
+    // Limpia errores previos
+    clearInputWarning(emailInput);
+    clearInputWarning(passwordInput);
+
+    // Validación de email
+    if (!emailInput.value) {
+        showInputWarning(emailInput, 'Debe rellenar el campo');
+        valid = false;
+    } else if (!emailInput.value.includes('@gmail.com')) {
+        showInputWarning(emailInput, 'Debe ingresar un correo @');
+        valid = false;
     }
+
+    // Validación de contraseña
+    if (!passwordInput.value) {
+        showInputWarning(passwordInput, 'Debe rellenar el campo');
+        valid = false;
+    } else if (passwordInput.value.length < 8) {
+        showInputWarning(passwordInput, 'La contraseña debe tener al menos 8 caracteres');
+        valid = false;
+    }
+
+    if (!valid) return;
+
+    // Validación contra usuarios registrados
+    const user = registeredUsers.find(u => u.email === emailInput.value && u.password === passwordInput.value);
+    if (!user) {
+        showNotification('Usuario o contraseña incorrectos', 'error');
+        return;
+    }
+
+    currentUser = {
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        address: user.address
+    };
+
+    showNotification(`¡Bienvenido, ${currentUser.name}!`, 'success');
+    toggleLogin();
+    updateUserUI();
+    loadUserData();
 }
 
 function handleRegister(event) {
     event.preventDefault();
-    
-    const inputs = event.target.querySelectorAll('input');
-    const name = inputs[0].value;
-    const email = inputs[1].value;
-    const phone = inputs[2].value;
-    const password = inputs[3].value;
-    const confirmPassword = inputs[4].value;
-    
-    if (!name || !email || !phone || !password || !confirmPassword) {
-        showNotification('Por favor completa todos los campos', 'error');
-        return;
+
+    const form = event.target;
+    const inputs = form.querySelectorAll('input');
+    let valid = true;
+
+    // Limpia errores previos
+    inputs.forEach(clearInputWarning);
+
+    // Validación de cada campo
+    if (!inputs[0].value) {
+        showInputWarning(inputs[0], 'Debe rellenar el campo');
+        valid = false;
     }
-    
-    if (password !== confirmPassword) {
-        showNotification('Las contraseñas no coinciden', 'error');
-        return;
+    if (!inputs[1].value) {
+        showInputWarning(inputs[1], 'Debe rellenar el campo');
+        valid = false;
+    } else if (!inputs[1].value.includes('@gmail.com')) {
+        showInputWarning(inputs[1], 'Debe ingresar un correo @');
+        valid = false;
     }
-    
-  
-    currentUser = {
-        name: name,
-        email: email,
-        phone: phone,
+    if (!inputs[2].value) {
+        showInputWarning(inputs[2], 'Debe rellenar el campo');
+        valid = false;
+    }
+    if (!inputs[3].value) {
+        showInputWarning(inputs[3], 'Debe rellenar el campo');
+        valid = false;
+    } else if (inputs[3].value.length < 8) {
+        showInputWarning(inputs[3], 'La contraseña debe tener al menos 8 caracteres');
+        valid = false;
+    }
+    if (!inputs[4].value) {
+        showInputWarning(inputs[4], 'Debe rellenar el campo');
+        valid = false;
+    }
+    if (inputs[3].value && inputs[4].value && inputs[3].value !== inputs[4].value) {
+        showInputWarning(inputs[4], 'Las contraseñas no coinciden');
+        valid = false;
+    }
+
+    if (!valid) return;
+
+    const newUser = {
+        name: inputs[0].value,
+        email: inputs[1].value,
+        phone: inputs[2].value,
+        password: inputs[3].value,
         address: ''
     };
-    
+
+    registeredUsers.push(newUser);
+    localStorage.setItem('huertohogar_users', JSON.stringify(registeredUsers));
+
+    currentUser = { ...newUser };
     showNotification(`¡Cuenta creada exitosamente! Bienvenido, ${currentUser.name}!`, 'success');
     toggleLogin();
     updateUserUI();
 }
-
 function updateUserUI() {
     const loginBtn = document.querySelector('.login-btn');
     if (currentUser && loginBtn) {
@@ -687,20 +745,48 @@ function logout() {
     currentUser = null;
     loyaltyPoints = 0;
     cart = [];
-    
+
     const loginBtn = document.querySelector('.login-btn');
     if (loginBtn) {
         loginBtn.innerHTML = `<i class="fas fa-user"></i>`;
         loginBtn.onclick = toggleLogin;
     }
-    
+
     updateCartUI();
     updateLoyaltyUI();
-    
-    // Cerrar modales
-    document.querySelectorAll('.modal').forEach(modal => modal.remove());
-    getElement('overlay').classList.remove('active');
-    
+
+    // Cerrar todos los modales excepto el loginModal
+    document.querySelectorAll('.modal').forEach(modal => {
+        if (modal.id !== 'loginModal') modal.classList.remove('active');
+    });
+
+    // Mostrar el modal de login y overlay
+    const loginModal = getElement('loginModal');
+    const overlay = getElement('overlay');
+    if (loginModal) {
+        loginModal.classList.add('active');
+        // Si el loginModal está vacío, inserta el formulario de login aquí si es necesario
+        // Ejemplo:
+        // loginModal.innerHTML = `<form id="loginForm">...</form>`;
+    }
+    if (overlay) {
+        overlay.classList.add('active');
+    }
+
+    // Mostrar y limpiar el formulario de login
+    const loginForm = getElement('loginForm');
+    const registerForm = getElement('registerForm');
+    if (loginForm && registerForm) {
+        loginForm.classList.remove('hidden');
+        registerForm.classList.add('hidden');
+        loginForm.reset();
+    }
+
+    // Limpia localStorage para que no se mantenga la sesión
+    localStorage.removeItem('huertohogar_user');
+    localStorage.removeItem('huertohogar_cart');
+    localStorage.removeItem('huertohogar_points');
+
     showNotification('Sesión cerrada', 'info');
 }
 
@@ -928,19 +1014,37 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(initializeScrollEffects, 500);
 });
 
-function toggleSearch() {
-    const searchDropdown = getElement('searchDropdown');
-    const isActive = searchDropdown.classList.contains('active');
-    
-    if (isActive) {
-        searchDropdown.classList.remove('active');
-    } else {
-        searchDropdown.classList.add('active');
-        setTimeout(() => {
-            const searchInput = getElement('searchInput');
-            if (searchInput) {
-                searchInput.focus();
-            }
-        }, 300);
+// Fuerza el estilo para los inputs con error
+const style = document.createElement('style');
+style.innerHTML = `
+input.input-error, textarea.input-error, select.input-error {
+    border: 2px solid #e74c3c !important;
+    outline: none !important;
+}
+.input-warning {
+    color: #e74c3c;
+    font-size: 0.95rem;
+    margin-top: 4px;
+    margin-bottom: 8px;
+}
+`;
+document.head.appendChild(style);
+
+function showInputWarning(input, message) {
+    input.classList.add('input-error');
+    // Elimina mensaje previo si existe
+    if (input.nextSibling && input.nextSibling.classList && input.nextSibling.classList.contains('input-warning')) {
+        input.nextSibling.remove();
+    }
+    const warning = document.createElement('div');
+    warning.className = 'input-warning';
+    warning.textContent = message;
+    input.parentNode.insertBefore(warning, input.nextSibling);
+}
+
+function clearInputWarning(input) {
+    input.classList.remove('input-error');
+    if (input.nextSibling && input.nextSibling.classList && input.nextSibling.classList.contains('input-warning')) {
+        input.nextSibling.remove();
     }
 }
