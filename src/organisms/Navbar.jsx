@@ -1,43 +1,26 @@
 import React from 'react';
 
-const Navbar = ({ cartCount, onCartClick, onLoginClick, currentUser }) => {
-  const scrollToSection = (sectionId) => {
-    const section = document.getElementById(sectionId);
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
+export default function Navbar({ cartCount, onToggleCart, onToggleLogin }) {
   return (
-    <header className="header">
-      <nav className="nav">
-        <div className="nav-container">
-          <div className="logo">
-            <h1>🌱 HuertoHogar</h1>
-          </div>
-          <ul className="nav-menu">
-            <li><a href="#inicio" onClick={(e) => { e.preventDefault(); scrollToSection('inicio'); }}>Inicio</a></li>
-            <li><a href="#productos" onClick={(e) => { e.preventDefault(); scrollToSection('productos'); }}>Productos</a></li>
-            <li><a href="#nosotros" onClick={(e) => { e.preventDefault(); scrollToSection('nosotros'); }}>Nosotros</a></li>
-            <li><a href="#blog" onClick={(e) => { e.preventDefault(); scrollToSection('blog'); }}>Blog</a></li>
-            <li><a href="#contacto" onClick={(e) => { e.preventDefault(); scrollToSection('contacto'); }}>Contacto</a></li>
-          </ul>
-          <div className="nav-actions">
-            <button className="search-btn">
-              <i className="fas fa-search"></i>
+    <nav className="fixed top-0 w-full bg-white shadow-md z-50">
+      <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="flex justify-between items-center">
+          <h1 className="text-3xl font-bold text-green-600">🌱 HuertoHogar</h1>
+          <div className="flex items-center gap-6">
+            <button onClick={onToggleCart} className="relative text-2xl hover:text-green-600">
+              🛒
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-yellow-400 text-gray-800 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+                  {cartCount}
+                </span>
+              )}
             </button>
-            <button className="cart-btn" onClick={onCartClick}>
-              <i className="fas fa-shopping-cart"></i>
-              <span className="cart-count">{cartCount}</span>
-            </button>
-            <button className="login-btn" onClick={onLoginClick}>
-              <i className={currentUser ? "fas fa-user-check" : "fas fa-user"}></i>
+            <button onClick={onToggleLogin} className="text-2xl hover:text-green-600">
+              👤
             </button>
           </div>
         </div>
-      </nav>
-    </header>
+      </div>
+    </nav>
   );
-};
-
-export default Navbar;
+}
