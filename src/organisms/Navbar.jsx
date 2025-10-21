@@ -1,26 +1,29 @@
+// src/organisms/Navbar.jsx
 import React from 'react';
+import { Navbar, Container, Nav } from 'react-bootstrap';
 
-export default function Navbar({ cartCount, onToggleCart, onToggleLogin }) {
+export default function NavbarComponent({ cartCount, onToggleCart, onToggleLogin }) {
   return (
-    <nav className="fixed top-0 w-full bg-white shadow-md z-50">
-      <div className="max-w-7xl mx-auto px-6 py-4">
-        <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-green-600">🌱 HuertoHogar</h1>
-          <div className="flex items-center gap-6">
-            <button onClick={onToggleCart} className="relative text-2xl hover:text-green-600">
-              🛒
+    <Navbar className="navbar-custom" expand="lg" fixed="top">
+      <Container>
+        <Navbar.Brand href="#home">🌱 HuertoHogar</Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="ms-auto align-items-center">
+            <Nav.Link onClick={onToggleCart} className="position-relative me-3">
+              <span style={{ fontSize: '1.5rem' }}>🛒</span>
               {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-yellow-400 text-gray-800 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+                <span className="cart-badge">
                   {cartCount}
                 </span>
               )}
-            </button>
-            <button onClick={onToggleLogin} className="text-2xl hover:text-green-600">
-              👤
-            </button>
-          </div>
-        </div>
-      </div>
-    </nav>
+            </Nav.Link>
+            <Nav.Link onClick={onToggleLogin}>
+              <span style={{ fontSize: '1.5rem' }}>👤</span>
+            </Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 }
