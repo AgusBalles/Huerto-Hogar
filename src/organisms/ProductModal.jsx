@@ -62,7 +62,7 @@ export default function ProductModal({ product, isOpen, onClose, onAddToCart }) 
             ))}
           </div>
         )}
-      </Modal.Body>
+      </Modal.Body>s
     </Modal>
   );
 }

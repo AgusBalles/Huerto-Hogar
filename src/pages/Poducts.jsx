@@ -1,21 +1,20 @@
-// src/pages/Home.jsx
+// src/pages/Products.jsx
 import React, { useState } from 'react';
 import { Container } from 'react-bootstrap';
 import NavbarComponent from '../organisms/Navbar';
-import Hero from '../organisms/Hero';
 import ProductGrid from '../organisms/ProductGrid';
 import CartSidebar from '../organisms/CartSidebar';
 import ProductModal from '../organisms/ProductModal';
 import Footer from '../organisms/Footer';
 import FilterButton from '../molecules/FilterButton';
-import { productsData } from '../molecules/data/products';
+import { productsData } from '../data/products';
+import { useCart } from '../context/CartContext';
 
-export default function Home() {
-  const [cart, setCart] = useState([]);
-  const [cartOpen, setCartOpen] = useState(false);
+export default function Products() {
   const [currentFilter, setCurrentFilter] = useState('all');
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const { addToCart } = useCart();
   
   const filters = [
     { id: 'all', label: 'Todos', icon: '' },
@@ -29,62 +28,17 @@ export default function Home() {
     ? productsData 
     : productsData.filter(p => p.category === currentFilter);
   
-  const addToCart = (product) => {
-    setCart(prev => {
-      const existing = prev.find(item => item.id === product.id);
-      if (existing) {
-        return prev.map(item => 
-          item.id === product.id 
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      }
-      return [...prev, { ...product, quantity: 1 }];
-    });
-  };
-  
-  const updateQuantity = (id, newQuantity) => {
-    if (newQuantity <= 0) {
-      removeFromCart(id);
-    } else {
-      setCart(prev => prev.map(item =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      ));
-    }
-  };
-  
-  const removeFromCart = (id) => {
-    setCart(prev => prev.filter(item => item.id !== id));
-  };
-  
-  const handleCheckout = () => {
-    if (cart.length === 0) {
-      alert('Tu carrito está vacío');
-      return;
-    }
-    alert('¡Pedido realizado con éxito!');
-    setCart([]);
-    setCartOpen(false);
-  };
-  
   const openProductModal = (product) => {
     setSelectedProduct(product);
     setModalOpen(true);
   };
   
-  const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-  
   return (
-    <div>
-      <NavbarComponent 
-        cartCount={cartCount}
-        onToggleCart={() => setCartOpen(!cartOpen)}
-        onToggleLogin={() => alert('Login modal')}
-      />
+    <>
+      <NavbarComponent />
+      <CartSidebar />
       
-      <Hero />
-      
-      <section className="py-5">
+      <section className="py-5" style={{ marginTop: '100px' }}>
         <Container>
           <h2 className="text-center fw-bold mb-5" style={{ fontSize: '2.5rem' }}>
             Nuestros Productos
@@ -110,15 +64,6 @@ export default function Home() {
         </Container>
       </section>
       
-      <CartSidebar
-        isOpen={cartOpen}
-        onClose={() => setCartOpen(false)}
-        cart={cart}
-        onUpdateQuantity={updateQuantity}
-        onRemove={removeFromCart}
-        onCheckout={handleCheckout}
-      />
-      
       <ProductModal
         product={selectedProduct}
         isOpen={modalOpen}
@@ -127,6 +72,6 @@ export default function Home() {
       />
       
       <Footer />
-    </div>
+    </>
   );
 }
