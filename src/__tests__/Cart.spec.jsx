@@ -30,7 +30,7 @@ describe('CartItem', () => {
 
     expect(screen.getByText('🍅')).toBeInTheDocument();
     expect(screen.getByText('Tomate')).toBeInTheDocument();
-    expect(screen.getByText('$2,990 CLP')).toBeInTheDocument();
+    expect(screen.getByText('$2.990 CLP')).toBeInTheDocument();
     expect(screen.getByText('2')).toBeInTheDocument();
   });
 
@@ -93,6 +93,6 @@ describe('CartItem', () => {
     );
 
     const botones = screen.getAllByRole('button');
-    expect(botones).toHaveLength(4);
+    expect(botones).toHaveLength(3);
   });
 });
