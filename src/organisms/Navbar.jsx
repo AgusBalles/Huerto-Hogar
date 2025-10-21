@@ -1,63 +1,100 @@
 // src/organisms/Navbar.jsx
-import React from 'react';
-import { Navbar, Container, Nav, NavDropdown } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { ShoppingCart, User, Search } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import CartSidebar from './CartSidebar';
 
-export default function NavbarComponent() {
-  const { getCartCount } = useCart();
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-  
-  const cartCount = getCartCount();
+const Navbar = () => {
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const { cart, updateQuantity, removeFromCart, getCartCount } = useCart();
+  const { currentUser } = useAuth();
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
+  const toggleCart = () => setIsCartOpen(!isCartOpen);
+  const closeCart = () => setIsCartOpen(false);
+
+  const handleCheckout = () => {
+    closeCart();
+    window.location.href = '/checkout';
   };
 
+  const cartCount = getCartCount();
+
   return (
-    <Navbar className="navbar-custom" expand="lg" fixed="top">
-      <Container>
-        <Navbar.Brand as={Link} to="/">🌱 HuertoHogar</Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
-            <Nav.Link as={Link} to="/">Inicio</Nav.Link>
-            <Nav.Link as={Link} to="/productos">Productos</Nav.Link>
-            <Nav.Link as={Link} to="/nosotros">Nosotros</Nav.Link>
-            <Nav.Link as={Link} to="/contacto">Contacto</Nav.Link>
-          </Nav>
-          <Nav className="align-items-center">
-            <Nav.Link as={Link} to="/cart" className="position-relative me-3">
-              <span style={{ fontSize: '1.5rem' }}>🛒</span>
-              {cartCount > 0 && (
-                <span className="cart-badge">{cartCount}</span>
-              )}
-            </Nav.Link>
-            
-            {user ? (
-              <NavDropdown 
-                title={`👤 ${user.name}`} 
-                id="user-dropdown"
+    <>
+      <nav className="navbar navbar-custom navbar-expand-lg">
+        <div className="container">
+          <Link className="navbar-brand" to="/">
+            🌱 HuertoHogar
+          </Link>
+
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+
+          <div className="collapse navbar-collapse" id="navbarNav">
+            <ul className="navbar-nav mx-auto">
+              <li className="nav-item">
+                <Link className="nav-link" to="/">Inicio</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/productos">Productos</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/nosotros">Nosotros</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/contacto">Contacto</Link>
+              </li>
+            </ul>
+
+            <div className="d-flex gap-3 align-items-center">
+              <button className="btn btn-link text-dark p-2" aria-label="Buscar">
+                <Search size={20} />
+              </button>
+
+              <button 
+                className="btn btn-link text-dark p-2 position-relative" 
+                onClick={toggleCart}
+                aria-label="Carrito de compras"
               >
-                <NavDropdown.Item as={Link} to="/order-history">
-                  Historial de Pedidos
-                </NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item onClick={handleLogout}>
-                  Cerrar Sesión
-                </NavDropdown.Item>
-              </NavDropdown>
-            ) : (
-              <Nav.Link as={Link} to="/login">
-                <span style={{ fontSize: '1.5rem' }}>👤</span> Login
-              </Nav.Link>
-            )}
-          </Nav>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
+                <ShoppingCart size={24} />
+                {cartCount > 0 && (
+                  <span className="cart-badge">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+
+              <Link 
+                to={currentUser ? "/perfil" : "/login"} 
+                className="btn btn-link text-dark p-2"
+                aria-label={currentUser ? "Perfil" : "Iniciar sesión"}
+              >
+                <User size={24} />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <CartSidebar
+        isOpen={isCartOpen}
+        onClose={closeCart}
+        items={cart}
+        onUpdateQuantity={updateQuantity}
+        onRemove={removeFromCart}
+        onCheckout={handleCheckout}
+        currentUser={currentUser}
+      />
+    </>
   );
-}
+};
+
+export default Navbar;

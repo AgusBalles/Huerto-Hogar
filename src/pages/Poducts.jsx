@@ -1,77 +1,108 @@
 // src/pages/Products.jsx
 import React, { useState } from 'react';
-import { Container } from 'react-bootstrap';
-import NavbarComponent from '../organisms/Navbar';
-import ProductGrid from '../organisms/ProductGrid';
-import CartSidebar from '../organisms/CartSidebar';
-import ProductModal from '../organisms/ProductModal';
+import Navbar from '../organisms/Navbar';
 import Footer from '../organisms/Footer';
+import ProductCard from '../molecules/ProductCard';
 import FilterButton from '../molecules/FilterButton';
-import { productsData } from '../data/products';
 import { useCart } from '../context/CartContext';
+import { products } from '../data/products';
 
-export default function Products() {
-  const [currentFilter, setCurrentFilter] = useState('all');
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [modalOpen, setModalOpen] = useState(false);
+const Products = () => {
+  const [activeCategory, setActiveCategory] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const { addToCart } = useCart();
-  
-  const filters = [
-    { id: 'all', label: 'Todos', icon: '' },
-    { id: 'frutas', label: 'Frutas Frescas', icon: '🍎' },
-    { id: 'verduras', label: 'Verduras Orgánicas', icon: '🥬' },
-    { id: 'organicos', label: 'Productos Orgánicos', icon: '🌾' },
-    { id: 'lacteos', label: 'Productos Lácteos', icon: '🥛' }
+
+  const categories = [
+    { value: 'all', label: 'Todos', icon: '🌟' },
+    { value: 'frutas', label: 'Frutas', icon: '🍎' },
+    { value: 'verduras', label: 'Verduras', icon: '🥬' },
+    { value: 'organicos', label: 'Orgánicos', icon: '🌾' },
+    { value: 'lacteos', label: 'Lácteos', icon: '🥛' }
   ];
-  
-  const filteredProducts = currentFilter === 'all' 
-    ? productsData 
-    : productsData.filter(p => p.category === currentFilter);
-  
-  const openProductModal = (product) => {
-    setSelectedProduct(product);
-    setModalOpen(true);
+
+  // Filtrar productos
+  const filteredProducts = products.filter(product => {
+    const matchesCategory = activeCategory === 'all' || product.category === activeCategory;
+    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         product.description.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
+  // Manejar agregar al carrito
+  const handleAddToCart = (product) => {
+    addToCart(product);
+    
+    // Mostrar notificación (opcional)
+    alert(`${product.name} agregado al carrito! 🛒`);
   };
-  
+
   return (
     <>
-      <NavbarComponent />
-      <CartSidebar />
+      <Navbar />
       
-      <section className="py-5" style={{ marginTop: '100px' }}>
-        <Container>
-          <h2 className="text-center fw-bold mb-5" style={{ fontSize: '2.5rem' }}>
-            Nuestros Productos
-          </h2>
-          
+      <main style={{ paddingTop: '80px', minHeight: '100vh' }}>
+        <div className="container py-5">
+          {/* Header */}
+          <div className="text-center mb-5">
+            <h1 className="display-4 fw-bold text-success mb-3">
+              Nuestros Productos
+            </h1>
+            <p className="lead text-muted">
+              Productos frescos y orgánicos directo del campo a tu mesa
+            </p>
+          </div>
+
+          {/* Barra de búsqueda */}
+          <div className="row mb-4">
+            <div className="col-md-6 mx-auto">
+              <input
+                type="text"
+                className="form-control form-control-lg"
+                placeholder="🔍 Buscar productos..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* Filtros de categoría */}
           <div className="d-flex flex-wrap justify-content-center gap-2 mb-5">
-            {filters.map(filter => (
-              <FilterButton
-                key={filter.id}
-                active={currentFilter === filter.id}
-                onClick={() => setCurrentFilter(filter.id)}
+            {categories.map(cat => (
+              <button
+                key={cat.value}
+                onClick={() => setActiveCategory(cat.value)}
+                className={`filter-btn ${activeCategory === cat.value ? 'active' : ''}`}
               >
-                {filter.icon} {filter.label}
-              </FilterButton>
+                {cat.icon} {cat.label}
+              </button>
             ))}
           </div>
-          
-          <ProductGrid
-            products={filteredProducts}
-            onAddToCart={addToCart}
-            onProductClick={openProductModal}
-          />
-        </Container>
-      </section>
-      
-      <ProductModal
-        product={selectedProduct}
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onAddToCart={addToCart}
-      />
-      
+
+          {/* Grid de productos */}
+          {filteredProducts.length > 0 ? (
+            <div className="row g-4">
+              {filteredProducts.map(product => (
+                <div key={product.id} className="col-12 col-sm-6 col-md-4 col-lg-3">
+                  <ProductCard
+                    product={product}
+                    onAddToCart={handleAddToCart}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-5">
+              <div style={{ fontSize: '5rem' }}>😔</div>
+              <h3 className="text-muted mt-3">No se encontraron productos</h3>
+              <p className="text-muted">Intenta con otra búsqueda o categoría</p>
+            </div>
+          )}
+        </div>
+      </main>
+
       <Footer />
     </>
   );
-}
+};
+
+export default Products;

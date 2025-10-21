@@ -1,48 +1,55 @@
-// src/molecules/ProductCard.jsx
 import React from 'react';
-import { Card, Button } from 'react-bootstrap';
-import Badge from '../atoms/Badge';
+import { ShoppingCart } from 'lucide-react';
+import Button from '../atoms/Button';
 
-export default function ProductCard({ product, onAddToCart, onClick }) {
+const ProductCard = ({ product, onAddToCart, onClick }) => {
   return (
-    <Card className="product-card h-100" onClick={onClick}>
-      <div className="product-image-box">
-        {/* Cambiar emoji por imagen */}
-        <img 
-          src={product.image} 
-          alt={product.name}
-          className="product-image"
-          style={{ 
-            width: '100%', 
-            height: '200px', 
-            objectFit: 'cover' 
-          }}
-        />
+    <div 
+      onClick={onClick}
+      className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+    >
+      <div className="h-48 bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-6xl relative">
+        {product.emoji}
         {product.sustainable && (
-          <div className="position-absolute top-0 end-0 m-2">
-            <Badge variant="organic">Orgánico</Badge>
+          <div className="absolute top-2 right-2">
+            <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-600 text-white">
+              Orgánico
+            </span>
           </div>
         )}
       </div>
-      <Card.Body className="d-flex flex-column">
-        <Card.Title className="fw-bold">{product.name}</Card.Title>
-        <Card.Text className="text-muted small flex-grow-1">
-          {product.description.substring(0, 100)}...
-        </Card.Text>
-        <div className="d-flex justify-content-between align-items-center mb-3">
-          <span className="product-price">${product.price.toLocaleString()} CLP</span>
-          <span className="product-stock">{product.stock} {product.unit}</span>
+      <div className="p-4">
+        <h3 className="text-xl font-bold text-gray-800 mb-2">{product.name}</h3>
+        <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
+        <div className="flex justify-between items-center mb-3">
+          <span className="text-2xl font-bold text-green-600">
+            ${product.price.toLocaleString()}
+          </span>
+          <span className="text-xs text-gray-500">
+            {product.stock} {product.unit}s
+          </span>
         </div>
         <Button 
-          className="btn-verde w-100"
-          onClick={(e) => { 
-            e.stopPropagation(); 
-            onAddToCart(product); 
+          onClick={(e) => {
+            e.stopPropagation();
+            onAddToCart(product);
           }}
+          className="w-full"
         >
-          Agregar al Carrito
+          <ShoppingCart size={18} /> Agregar
         </Button>
-      </Card.Body>
-    </Card>
+      </div>
+      
+      <style jsx>{`
+        .line-clamp-2 {
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+      `}</style>
+    </div>
   );
-}
+};
+
+export default ProductCard;
