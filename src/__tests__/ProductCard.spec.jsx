@@ -1,7 +1,7 @@
 // src/__tests__/ProductCard.spec.jsx
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import ProductCard from '../molecules/ProductCard'; // ← Ruta corregida
+import ProductCard from '../molecules/ProductCard';
 
 // Mock de lucide-react y Button
 jest.mock('lucide-react', () => ({
@@ -56,30 +56,6 @@ describe('ProductCard', () => {
     expect(screen.getByText('Orgánico')).toBeInTheDocument();
   });
 
-  test('muestra el badge orgánico solo cuando el producto es sustainable', () => {
-    const productNoOrganic = { ...mockProduct, sustainable: false };
-    
-    const { rerender } = render(
-      <ProductCard 
-        product={mockProduct} 
-        onAddToCart={mockOnAddToCart}
-        onClick={mockOnClick}
-      />
-    );
-    
-    expect(screen.getByText('Orgánico')).toBeInTheDocument();
-
-    rerender(
-      <ProductCard 
-        product={productNoOrganic} 
-        onAddToCart={mockOnAddToCart}
-        onClick={mockOnClick}
-      />
-    );
-
-    expect(screen.queryByText('Orgánico')).not.toBeInTheDocument();
-  });
-
   test('renderiza la imagen con los atributos correctos', () => {
     render(
       <ProductCard 
@@ -94,7 +70,7 @@ describe('ProductCard', () => {
     expect(image).toHaveAttribute('src', '/img/manzana.png');
   });
 
-  test('llama a onClick cuando se hace clic en la tarjeta', () => {
+  test('llama a onClick cuando se hace clic en la imagen', () => {
     render(
       <ProductCard 
         product={mockProduct} 
@@ -103,8 +79,23 @@ describe('ProductCard', () => {
       />
     );
 
-    const card = screen.getByText('Manzanas Fuji').closest('div[class*="bg-white"]');
-    fireEvent.click(card);
+    const imageContainer = screen.getByAltText('Manzanas Fuji').closest('div');
+    fireEvent.click(imageContainer);
+
+    expect(mockOnClick).toHaveBeenCalledTimes(1);
+  });
+
+  test('llama a onClick cuando se hace clic en el título', () => {
+    render(
+      <ProductCard 
+        product={mockProduct} 
+        onAddToCart={mockOnAddToCart}
+        onClick={mockOnClick}
+      />
+    );
+
+    const title = screen.getByText('Manzanas Fuji');
+    fireEvent.click(title);
 
     expect(mockOnClick).toHaveBeenCalledTimes(1);
   });

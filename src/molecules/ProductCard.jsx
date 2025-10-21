@@ -50,7 +50,7 @@ const ProductCard = ({ product, onAddToCart, onClick }) => {
         {/* Botón SOLO para agregar al carrito */}
         <Button 
           onClick={() => {
-            console.log('🛒 Agregando:', product.name);
+            
             onAddToCart(product);
           }}
           className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded flex items-center justify-center gap-2"
