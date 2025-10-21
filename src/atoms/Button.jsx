@@ -1,19 +1,20 @@
+// src/atoms/Button.jsx
 import React from 'react';
+import { Button as BootstrapButton } from 'react-bootstrap';
 
 export default function Button({ children, onClick, variant = 'primary', className = '' }) {
-  const baseStyle = 'px-6 py-3 rounded-full font-semibold transition-all duration-300';
-  const variants = {
-    primary: 'bg-green-600 hover:bg-green-700 text-white',
-    secondary: 'bg-yellow-400 hover:bg-yellow-500 text-gray-800',
-    outline: 'border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white'
+  const variantClass = {
+    primary: 'btn-verde',
+    secondary: 'btn-amarillo',
+    outline: 'btn-outline-verde'
   };
   
   return (
-    <button 
+    <BootstrapButton 
       onClick={onClick} 
-      className={`${baseStyle} ${variants[variant]} ${className}`}
+      className={`${variantClass[variant]} ${className}`}
     >
       {children}
-    </button>
+    </BootstrapButton>
   );
 }

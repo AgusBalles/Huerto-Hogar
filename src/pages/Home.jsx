@@ -1,5 +1,7 @@
+// src/pages/Home.jsx
 import React, { useState } from 'react';
-import Navbar from '../organisms/Navbar';
+import { Container } from 'react-bootstrap';
+import NavbarComponent from '../organisms/Navbar';
 import Hero from '../organisms/Hero';
 import ProductGrid from '../organisms/ProductGrid';
 import CartSidebar from '../organisms/CartSidebar';
@@ -73,8 +75,8 @@ export default function Home() {
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
   
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar 
+    <div>
+      <NavbarComponent 
         cartCount={cartCount}
         onToggleCart={() => setCartOpen(!cartOpen)}
         onToggleLogin={() => alert('Login modal')}
@@ -82,13 +84,13 @@ export default function Home() {
       
       <Hero />
       
-      <section className="py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold text-center text-gray-800 mb-12">
+      <section className="py-5">
+        <Container>
+          <h2 className="text-center fw-bold mb-5" style={{ fontSize: '2.5rem' }}>
             Nuestros Productos
           </h2>
           
-          <div className="flex flex-wrap justify-center gap-4 mb-12">
+          <div className="d-flex flex-wrap justify-content-center gap-2 mb-5">
             {filters.map(filter => (
               <FilterButton
                 key={filter.id}
@@ -105,7 +107,7 @@ export default function Home() {
             onAddToCart={addToCart}
             onProductClick={openProductModal}
           />
-        </div>
+        </Container>
       </section>
       
       <CartSidebar

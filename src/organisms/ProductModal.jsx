@@ -1,57 +1,68 @@
+// src/organisms/ProductModal.jsx
 import React from 'react';
-import Button from '../atoms/Button';
+import { Modal, Button, Row, Col } from 'react-bootstrap';
 
 export default function ProductModal({ product, isOpen, onClose, onAddToCart }) {
-  if (!isOpen || !product) return null;
+  if (!product) return null;
   
   return (
-    <div 
-      className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-6"
-      onClick={onClose}
+    <Modal 
+      show={isOpen} 
+      onHide={onClose} 
+      size="lg"
+      centered
     >
-      <div 
-        className="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto"
-        onClick={e => e.stopPropagation()}
-      >
-        <div className="p-8">
-          <button onClick={onClose} className="float-right text-3xl hover:text-gray-600">×</button>
-          <div className="flex gap-8 mb-6">
-            <div className="w-64 h-64 bg-gradient-to-br from-green-600 to-green-400 rounded-xl flex items-center justify-center text-8xl">
+      <Modal.Header closeButton>
+        <Modal.Title>{product.name}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Row>
+          <Col md={5}>
+            <div className="modal-product-image">
               {product.emoji}
             </div>
-            <div className="flex-1">
-              <h2 className="text-3xl font-bold text-gray-800 mb-4">{product.name}</h2>
-              <p className="text-3xl font-bold text-green-600 mb-4">
-                ${product.price.toLocaleString()} CLP
-              </p>
-              <p className="text-gray-600 mb-4">{product.description}</p>
-              <div className="space-y-2 mb-6">
-                <p><strong>Origen:</strong> {product.origin}</p>
-                <p><strong>Stock:</strong> {product.stock} {product.unit}s</p>
-                {product.sustainable && <p className="text-green-600 font-semibold">✓ Producto orgánico</p>}
-              </div>
-              <Button onClick={() => { onAddToCart(product); onClose(); }}>
-                Agregar al Carrito
-              </Button>
+          </Col>
+          <Col md={7}>
+            <h2 className="product-price mb-3">
+              ${product.price.toLocaleString()} CLP
+            </h2>
+            <p className="text-muted mb-4">{product.description}</p>
+            <div className="mb-4">
+              <p><strong>Origen:</strong> {product.origin}</p>
+              <p><strong>Stock:</strong> {product.stock} {product.unit}s</p>
+              {product.sustainable && (
+                <p className="text-success fw-bold">✓ Producto orgánico</p>
+              )}
             </div>
-          </div>
-          
-          {product.reviews.length > 0 && (
-            <div className="border-t pt-6">
-              <h3 className="text-xl font-bold mb-4">Reseñas ({product.reviews.length})</h3>
-              {product.reviews.map((review, idx) => (
-                <div key={idx} className="mb-4 pb-4 border-b last:border-0">
-                  <div className="flex justify-between mb-2">
-                    <strong>{review.user}</strong>
-                    <span className="text-yellow-400">{'★'.repeat(review.rating)}{'☆'.repeat(5-review.rating)}</span>
-                  </div>
-                  <p className="text-gray-600">{review.comment}</p>
+            <Button 
+              className="btn-verde w-100"
+              onClick={() => { 
+                onAddToCart(product); 
+                onClose(); 
+              }}
+            >
+              Agregar al Carrito
+            </Button>
+          </Col>
+        </Row>
+        
+        {product.reviews && product.reviews.length > 0 && (
+          <div className="mt-4 pt-4 border-top">
+            <h5 className="mb-3">Reseñas ({product.reviews.length})</h5>
+            {product.reviews.map((review, idx) => (
+              <div key={idx} className="mb-3 pb-3 border-bottom">
+                <div className="d-flex justify-content-between mb-2">
+                  <strong>{review.user}</strong>
+                  <span className="review-stars">
+                    {'★'.repeat(review.rating)}{'☆'.repeat(5-review.rating)}
+                  </span>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
+                <p className="text-muted mb-0">{review.comment}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </Modal.Body>
+    </Modal>
   );
 }

@@ -1,36 +1,38 @@
+// src/molecules/ProductCard.jsx
 import React from 'react';
-import Button from '../atoms/Button';
+import { Card, Button } from 'react-bootstrap';
 import Badge from '../atoms/Badge';
 
 export default function ProductCard({ product, onAddToCart, onClick }) {
   return (
-    <div 
-      onClick={onClick}
-      className="bg-white rounded-2xl shadow-lg overflow-hidden transition-transform duration-300 hover:-translate-y-2 hover:shadow-xl cursor-pointer"
-    >
-      <div className="h-48 bg-gradient-to-br from-green-600 to-green-400 flex items-center justify-center text-6xl relative">
-        {product.emoji}
+    <Card className="product-card h-100" onClick={onClick}>
+      <div className="product-image-box">
+        <span>{product.emoji}</span>
         {product.sustainable && (
-          <div className="absolute top-3 right-3">
+          <div className="position-absolute top-0 end-0 m-2">
             <Badge variant="organic">Orgánico</Badge>
           </div>
         )}
       </div>
-      <div className="p-6">
-        <h3 className="text-xl font-bold text-gray-800 mb-2">{product.name}</h3>
-        <p className="text-gray-600 text-sm mb-4 line-clamp-2">{product.description}</p>
-        <div className="flex justify-between items-center mb-4">
-          <span className="text-2xl font-bold text-green-600">${product.price.toLocaleString()}</span>
-          <span className="text-sm text-gray-500">{product.stock} {product.unit}s</span>
+      <Card.Body className="d-flex flex-column">
+        <Card.Title className="fw-bold">{product.name}</Card.Title>
+        <Card.Text className="text-muted small flex-grow-1">
+          {product.description.substring(0, 100)}...
+        </Card.Text>
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <span className="product-price">${product.price.toLocaleString()}</span>
+          <span className="product-stock">{product.stock} {product.unit}s</span>
         </div>
         <Button 
-          onClick={(e) => { e.stopPropagation(); onAddToCart(product); }}
-          variant="primary"
-          className="w-full"
+          className="btn-verde w-100"
+          onClick={(e) => { 
+            e.stopPropagation(); 
+            onAddToCart(product); 
+          }}
         >
           Agregar al Carrito
         </Button>
-      </div>
-    </div>
+      </Card.Body>
+    </Card>
   );
 }

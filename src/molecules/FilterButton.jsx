@@ -1,16 +1,14 @@
+// src/molecules/FilterButton.jsx
 import React from 'react';
+import { Button } from 'react-bootstrap';
 
 export default function FilterButton({ active, onClick, children }) {
   return (
-    <button
+    <Button
       onClick={onClick}
-      className={`px-6 py-2 rounded-full font-semibold transition-all duration-300 ${
-        active 
-          ? 'bg-green-600 text-white' 
-          : 'bg-white text-green-600 border-2 border-green-600 hover:bg-green-50'
-      }`}
+      className={`filter-btn ${active ? 'active' : ''}`}
     >
       {children}
-    </button>
+    </Button>
   );
 }

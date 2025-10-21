@@ -1,16 +1,20 @@
+// src/organisms/ProductGrid.jsx
 import React from 'react';
-import ProductCard from '../molecules/ProductCard.jsx';
+import { Row, Col } from 'react-bootstrap';
+import ProductCard from '../molecules/ProductCard';
+
 export default function ProductGrid({ products, onAddToCart, onProductClick }) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <Row className="g-4">
       {products.map(product => (
-        <ProductCard
-          key={product.id}
-          product={product}
-          onAddToCart={onAddToCart}
-          onClick={() => onProductClick(product)}
-        />
+        <Col key={product.id} xs={12} sm={6} lg={4}>
+          <ProductCard
+            product={product}
+            onAddToCart={onAddToCart}
+            onClick={() => onProductClick(product)}
+          />
+        </Col>
       ))}
-    </div>
+    </Row>
   );
 }

@@ -1,33 +1,39 @@
+// src/molecules/CartItem.jsx
 import React from 'react';
+import { Button } from 'react-bootstrap';
 
 export default function CartItem({ item, onUpdateQuantity, onRemove }) {
   return (
-    <div className="flex items-center gap-4 p-4 border-b border-gray-200">
-      <div className="text-4xl">{item.emoji}</div>
-      <div className="flex-1">
-        <h4 className="font-semibold text-gray-800">{item.name}</h4>
-        <p className="text-sm text-gray-600">${item.price.toLocaleString()} CLP</p>
+    <div className="cart-item">
+      <div className="cart-item-emoji">{item.emoji}</div>
+      <div className="flex-grow-1">
+        <h6 className="mb-1 fw-bold">{item.name}</h6>
+        <p className="mb-0 small text-muted">${item.price.toLocaleString()} CLP</p>
       </div>
-      <div className="flex items-center gap-2">
-        <button 
+      <div className="cart-controls">
+        <Button 
+          variant="success"
+          size="sm"
           onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
-          className="w-8 h-8 bg-green-600 text-white rounded-full hover:bg-green-700"
         >
           -
-        </button>
-        <span className="w-8 text-center font-semibold">{item.quantity}</span>
-        <button 
+        </Button>
+        <span className="mx-2 fw-bold">{item.quantity}</span>
+        <Button 
+          variant="success"
+          size="sm"
           onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-          className="w-8 h-8 bg-green-600 text-white rounded-full hover:bg-green-700"
         >
           +
-        </button>
-        <button 
+        </Button>
+        <Button 
+          variant="danger"
+          size="sm"
+          className="ms-2"
           onClick={() => onRemove(item.id)}
-          className="ml-2 w-8 h-8 bg-red-500 text-white rounded-full hover:bg-red-600"
         >
           ×
-        </button>
+        </Button>
       </div>
     </div>
   );
