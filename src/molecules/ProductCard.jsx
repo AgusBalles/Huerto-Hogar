@@ -7,7 +7,17 @@ export default function ProductCard({ product, onAddToCart, onClick }) {
   return (
     <Card className="product-card h-100" onClick={onClick}>
       <div className="product-image-box">
-        <span>{product.emoji}</span>
+        {/* Cambiar emoji por imagen */}
+        <img 
+          src={product.image} 
+          alt={product.name}
+          className="product-image"
+          style={{ 
+            width: '100%', 
+            height: '200px', 
+            objectFit: 'cover' 
+          }}
+        />
         {product.sustainable && (
           <div className="position-absolute top-0 end-0 m-2">
             <Badge variant="organic">Orgánico</Badge>
@@ -20,8 +30,8 @@ export default function ProductCard({ product, onAddToCart, onClick }) {
           {product.description.substring(0, 100)}...
         </Card.Text>
         <div className="d-flex justify-content-between align-items-center mb-3">
-          <span className="product-price">${product.price.toLocaleString()}</span>
-          <span className="product-stock">{product.stock} {product.unit}s</span>
+          <span className="product-price">${product.price.toLocaleString()} CLP</span>
+          <span className="product-stock">{product.stock} {product.unit}</span>
         </div>
         <Button 
           className="btn-verde w-100"

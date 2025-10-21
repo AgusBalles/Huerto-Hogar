@@ -276,7 +276,7 @@ button {
 }
 
 .product-image {
-  height: 12rem;
+  height: 2rem;
   background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
   display: flex;
   align-items: center;
