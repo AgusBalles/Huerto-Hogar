@@ -274,7 +274,43 @@ button {
   transform: translateY(-0.5rem);
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
 }
+/* Estilos para la notificación toast */
+.toast {
+  animation: slideInRight 0.3s ease-out;
+}
 
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Estilos para los botones de filtro */
+.filter-btn {
+  padding: 0.5rem 1rem;
+  border: 2px solid #e9ecef;
+  border-radius: 2rem;
+  background: white;
+  color: #6c757d;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.filter-btn:hover {
+  border-color: #4a7c59;
+  color: #4a7c59;
+}
+
+.filter-btn.active {
+  background: #4a7c59;
+  border-color: #4a7c59;
+  color: white;
+}
 .product-image {
   height: 2rem;
   background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);

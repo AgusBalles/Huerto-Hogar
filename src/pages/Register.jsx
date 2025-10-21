@@ -1,4 +1,3 @@
-// src/pages/Register.jsx
 import React, { useState } from 'react';
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
@@ -16,7 +15,10 @@ export default function Register() {
     confirmPassword: ''
   });
   const [errors, setErrors] = useState({});
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
 
@@ -75,20 +77,62 @@ export default function Register() {
         [name]: ''
       }));
     }
+    // Limpiar error general
+    if (showError) {
+      setShowError(false);
+      setErrorMessage('');
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setShowError(false);
+    setErrorMessage('');
+    setShowSuccess(false);
+    setIsLoading(true);
     
     if (validateForm()) {
-      const result = register(formData);
-      if (result.success) {
-        setShowSuccess(true);
-        setTimeout(() => {
-          navigate('/productos');
-        }, 1500);
+      try {
+        console.log('📝 Intentando registrar usuario:', formData.email);
+        
+        // ✅ CORREGIDO: Pasar parámetros separados
+        const result = await register(
+          formData.name, 
+          formData.email, 
+          formData.password
+        );
+        
+        console.log('📋 Resultado del registro:', result);
+        
+        if (result.success) {
+          console.log('✅ Registro exitoso, redirigiendo...');
+          setShowSuccess(true);
+          setTimeout(() => {
+            navigate('/productos');
+          }, 1500);
+        } else {
+          // Manejar errores específicos
+          if (result.error === "USER_ALREADY_EXISTS") {
+            setErrorMessage('❌ Este email ya está registrado. ¿Ya tienes cuenta?');
+          } else {
+            setErrorMessage('❌ Error en el registro. Intenta nuevamente.');
+          }
+          setShowError(true);
+          
+          // Lanzar error JavaScript
+          console.error('🚨 ERROR DE REGISTRO:', {
+            email: formData.email,
+            error: result.error,
+            message: 'Error en el proceso de registro'
+          });
+        }
+      } catch (error) {
+        console.error('💥 Error en el proceso de registro:', error);
+        setErrorMessage('❌ Error del sistema. Intenta más tarde.');
+        setShowError(true);
       }
     }
+    setIsLoading(false);
   };
 
   return (
@@ -107,8 +151,39 @@ export default function Register() {
                 </div>
 
                 {showSuccess && (
-                  <Alert variant="success">
-                    ¡Cuenta creada exitosamente! Redirigiendo...
+                  <Alert variant="success" className="border-0 shadow-sm">
+                    <div className="d-flex align-items-center">
+                      <span className="fw-bold me-2">✅</span>
+                      <span>¡Cuenta creada exitosamente! Redirigiendo...</span>
+                    </div>
+                  </Alert>
+                )}
+
+                {showError && (
+                  <Alert 
+                    variant="danger" 
+                    onClose={() => setShowError(false)} 
+                    dismissible
+                    className="border-0 shadow-sm"
+                    style={{
+                      backgroundColor: '#fee2e2',
+                      borderLeft: '4px solid #dc2626',
+                      color: '#7f1d1d'
+                    }}
+                  >
+                    <div className="d-flex align-items-start">
+                      <span className="fw-bold me-2" style={{ fontSize: '1.2em' }}>⚠️</span>
+                      <div>
+                        <span className="fw-bold">{errorMessage}</span>
+                        {errorMessage.includes('ya está registrado') && (
+                          <div className="mt-2">
+                            <Link to="/login" className="btn btn-sm btn-outline-danger">
+                              Iniciar Sesión
+                            </Link>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </Alert>
                 )}
 
@@ -122,6 +197,7 @@ export default function Register() {
                       value={formData.name}
                       onChange={handleChange}
                       isInvalid={!!errors.name}
+                      disabled={isLoading}
                     />
                     <Form.Control.Feedback type="invalid">
                       {errors.name}
@@ -137,6 +213,7 @@ export default function Register() {
                       value={formData.email}
                       onChange={handleChange}
                       isInvalid={!!errors.email}
+                      disabled={isLoading}
                     />
                     <Form.Control.Feedback type="invalid">
                       {errors.email}
@@ -152,6 +229,7 @@ export default function Register() {
                       value={formData.phone}
                       onChange={handleChange}
                       isInvalid={!!errors.phone}
+                      disabled={isLoading}
                     />
                     <Form.Control.Feedback type="invalid">
                       {errors.phone}
@@ -167,6 +245,7 @@ export default function Register() {
                       value={formData.password}
                       onChange={handleChange}
                       isInvalid={!!errors.password}
+                      disabled={isLoading}
                     />
                     <Form.Control.Feedback type="invalid">
                       {errors.password}
@@ -182,19 +261,31 @@ export default function Register() {
                       value={formData.confirmPassword}
                       onChange={handleChange}
                       isInvalid={!!errors.confirmPassword}
+                      disabled={isLoading}
                     />
                     <Form.Control.Feedback type="invalid">
                       {errors.confirmPassword}
                     </Form.Control.Feedback>
                   </Form.Group>
 
-                  <Button type="submit" className="btn-verde w-100 mb-3">
-                    Crear Cuenta
+                  <Button 
+                    type="submit" 
+                    className="btn-verde w-100 mb-3"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <>
+                        <span className="spinner-border spinner-border-sm me-2" />
+                        Creando cuenta...
+                      </>
+                    ) : (
+                      'Crear Cuenta'
+                    )}
                   </Button>
 
                   <div className="text-center">
                     <p className="mb-0">
-                      ¿Ya tienes cuenta? <Link to="/login">Inicia sesión aquí</Link>
+                      ¿Ya tienes cuenta? <Link to="/login" className="fw-bold text-success">Inicia sesión aquí</Link>
                     </p>
                   </div>
                 </Form>

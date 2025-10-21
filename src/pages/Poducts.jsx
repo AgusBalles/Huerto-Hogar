@@ -3,13 +3,13 @@ import React, { useState } from 'react';
 import Navbar from '../organisms/Navbar';
 import Footer from '../organisms/Footer';
 import ProductCard from '../molecules/ProductCard';
-import FilterButton from '../molecules/FilterButton';
 import { useCart } from '../context/CartContext';
 import { products } from '../data/products';
 
 const Products = () => {
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedProduct, setSelectedProduct] = useState(null); // ✅ Estado para el modal
   const { addToCart } = useCart();
 
   const categories = [
@@ -31,9 +31,26 @@ const Products = () => {
   // Manejar agregar al carrito
   const handleAddToCart = (product) => {
     addToCart(product);
-    
-    // Mostrar notificación (opcional)
     alert(`${product.name} agregado al carrito! 🛒`);
+  };
+
+  // ✅ ABRIR MODAL con detalles del producto
+  const handleProductClick = (product) => {
+    setSelectedProduct(product);
+  };
+
+  // ✅ CERRAR MODAL
+  const handleCloseModal = () => {
+    setSelectedProduct(null);
+  };
+
+  // ✅ AGREGAR AL CARRITO DESDE EL MODAL
+  const handleAddFromModal = () => {
+    if (selectedProduct) {
+      addToCart(selectedProduct);
+      alert(`${selectedProduct.name} agregado al carrito! 🛒`);
+      handleCloseModal();
+    }
   };
 
   return (
@@ -86,6 +103,7 @@ const Products = () => {
                   <ProductCard
                     product={product}
                     onAddToCart={handleAddToCart}
+                    onClick={() => handleProductClick(product)} // ✅ Abre modal
                   />
                 </div>
               ))}
@@ -101,6 +119,124 @@ const Products = () => {
       </main>
 
       <Footer />
+
+      {/* ✅ MODAL DE DETALLES DEL PRODUCTO */}
+      {selectedProduct && (
+        <div 
+          className="modal show d-block" 
+          style={{ backgroundColor: 'rgba(0,0,0,0.5)', position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1050 }}
+          onClick={handleCloseModal} // Cerrar al hacer clic fuera
+        >
+          <div 
+            className="modal-dialog modal-lg modal-dialog-centered"
+            onClick={(e) => e.stopPropagation()} // Evitar que se cierre al hacer clic dentro
+          >
+            <div className="modal-content">
+              {/* Header del modal */}
+              <div className="modal-header bg-success text-white">
+                <h5 className="modal-title fw-bold">{selectedProduct.name}</h5>
+                <button 
+                  type="button" 
+                  className="btn-close btn-close-white" 
+                  onClick={handleCloseModal}
+                  aria-label="Cerrar"
+                ></button>
+              </div>
+
+              {/* Body del modal */}
+              <div className="modal-body">
+                <div className="row">
+                  {/* Imagen del producto */}
+                  <div className="col-md-6">
+                    <img 
+                      src={selectedProduct.image} 
+                      alt={selectedProduct.name}
+                      className="img-fluid rounded"
+                      style={{ maxHeight: '300px', objectFit: 'contain', width: '100%' }}
+                    />
+                  </div>
+
+                  {/* Información del producto */}
+                  <div className="col-md-6">
+                    <h4 className="text-success fw-bold mb-3">
+                      ${selectedProduct.price.toLocaleString()} CLP
+                    </h4>
+                    
+                    <p className="text-muted mb-3">
+                      {selectedProduct.description}
+                    </p>
+
+                    <div className="mb-3">
+                      <strong>Categoría:</strong>{' '}
+                      <span className="badge bg-success">
+                        {selectedProduct.category}
+                      </span>
+                    </div>
+
+                    <div className="mb-3">
+                      <strong>Origen:</strong>{' '}
+                      <span className="text-muted">{selectedProduct.origin}</span>
+                    </div>
+
+                    <div className="mb-3">
+                      <strong>Stock disponible:</strong>{' '}
+                      <span className={`fw-bold ${selectedProduct.stock < 10 ? 'text-warning' : 'text-success'}`}>
+                        {selectedProduct.stock} {selectedProduct.unit}
+                      </span>
+                    </div>
+
+                    {selectedProduct.sustainable && (
+                      <div className="mb-3">
+                        <span className="badge bg-warning text-dark">
+                          🌱 Producto Orgánico
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Reviews */}
+                    {selectedProduct.reviews && selectedProduct.reviews.length > 0 && (
+                      <div className="mb-3">
+                        <strong>Reseñas:</strong>
+                        <div className="mt-2">
+                          {selectedProduct.reviews.slice(0, 2).map((review, index) => (
+                            <div key={index} className="border-start border-3 border-success ps-2 mb-2">
+                              <div className="d-flex justify-content-between">
+                                <strong>{review.user}</strong>
+                                <span className="text-warning">
+                                  {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
+                                </span>
+                              </div>
+                              <small className="text-muted">{review.comment}</small>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer del modal */}
+              <div className="modal-footer">
+                <button 
+                  type="button" 
+                  className="btn btn-outline-secondary" 
+                  onClick={handleCloseModal}
+                >
+                  Cerrar
+                </button>
+                <button 
+                  type="button" 
+                  className="btn btn-success" 
+                  onClick={handleAddFromModal}
+                >
+                  🛒 Agregar al Carrito
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

@@ -1,7 +1,7 @@
 // src/organisms/Navbar.jsx
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ShoppingCart, User, Search } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ShoppingCart, User, Search, LogOut, User as UserIcon, Package } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import CartSidebar from './CartSidebar';
@@ -9,21 +9,37 @@ import CartSidebar from './CartSidebar';
 const Navbar = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const { cart, updateQuantity, removeFromCart, getCartCount } = useCart();
-  const { currentUser } = useAuth();
+  const { currentUser, logout } = useAuth();
+  const navigate = useNavigate();
+
+  // ✅ Inicializar dropdowns de Bootstrap
+  useEffect(() => {
+    const initBootstrap = async () => {
+      // Cargar JavaScript de Bootstrap
+      await import('bootstrap/dist/js/bootstrap.bundle.min.js');
+    };
+    initBootstrap();
+  }, []);
 
   const toggleCart = () => setIsCartOpen(!isCartOpen);
   const closeCart = () => setIsCartOpen(false);
 
   const handleCheckout = () => {
     closeCart();
-    window.location.href = '/checkout';
+    navigate('/checkout');
+  };
+
+  const handleLogout = () => {
+    console.log('🚪 Cerrando sesión...');
+    logout();
+    navigate('/');
   };
 
   const cartCount = getCartCount();
 
   return (
     <>
-      <nav className="navbar navbar-custom navbar-expand-lg">
+      <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
         <div className="container">
           <Link className="navbar-brand" to="/">
             🌱 HuertoHogar
@@ -34,6 +50,9 @@ const Navbar = () => {
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
           >
             <span className="navbar-toggler-icon"></span>
           </button>
@@ -66,19 +85,71 @@ const Navbar = () => {
               >
                 <ShoppingCart size={24} />
                 {cartCount > 0 && (
-                  <span className="cart-badge">
+                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                     {cartCount}
                   </span>
                 )}
               </button>
 
-              <Link 
-                to={currentUser ? "/perfil" : "/login"} 
-                className="btn btn-link text-dark p-2"
-                aria-label={currentUser ? "Perfil" : "Iniciar sesión"}
-              >
-                <User size={24} />
-              </Link>
+              {/* ✅ DROPDOWN CON BOOTSTRAP NATIVO */}
+              {currentUser ? (
+                <div className="dropdown">
+                  <button 
+                    className="btn btn-link text-dark p-2 dropdown-toggle d-flex align-items-center" 
+                    type="button" 
+                    id="userDropdown"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                    aria-label="Menú de usuario"
+                    style={{ textDecoration: 'none', border: 'none' }}
+                  >
+                    <UserIcon size={24} />
+                    <span className="ms-1 d-none d-sm-inline" style={{ fontSize: '0.9rem' }}>
+                      {currentUser.name}
+                    </span>
+                  </button>
+                  <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                    <li>
+                      <span className="dropdown-item-text small text-muted">
+                        👋 Hola, <strong>{currentUser.name}</strong>
+                      </span>
+                    </li>
+                    <li><hr className="dropdown-divider" /></li>
+                    <li>
+                      <Link className="dropdown-item d-flex align-items-center" to="/perfil">
+                        <UserIcon size={16} className="me-2" />
+                        Mi Perfil
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item d-flex align-items-center" to="/historial">
+                        <Package size={16} className="me-2" />
+                        Mis Pedidos
+                      </Link>
+                    </li>
+                    <li><hr className="dropdown-divider" /></li>
+                    <li>
+                      <button 
+                        className="dropdown-item d-flex align-items-center text-danger" 
+                        onClick={handleLogout}
+                      >
+                        <LogOut size={16} className="me-2" />
+                        Cerrar Sesión
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              ) : (
+                <Link 
+                  to="/login" 
+                  className="btn btn-link text-dark p-2 d-flex align-items-center"
+                  aria-label="Iniciar sesión"
+                  style={{ textDecoration: 'none' }}
+                >
+                  <User size={24} />
+                  <span className="ms-1 d-none d-sm-inline">Login</span>
+                </Link>
+              )}
             </div>
           </div>
         </div>

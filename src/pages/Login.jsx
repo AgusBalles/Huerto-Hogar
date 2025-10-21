@@ -1,4 +1,3 @@
-// src/pages/Login.jsx
 import React, { useState } from 'react';
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
@@ -14,20 +13,28 @@ export default function Login() {
   });
   const [errors, setErrors] = useState({});
   const [showError, setShowError] = useState(false);
-  const { login } = useAuth();
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const { login, user } = useAuth();
   const navigate = useNavigate();
+
+  // Si ya está autenticado, redirigir
+  React.useEffect(() => {
+    if (user) {
+      console.log('✅ Usuario ya autenticado, redirigiendo...');
+      navigate('/productos');
+    }
+  }, [user, navigate]);
 
   const validateForm = () => {
     const newErrors = {};
     
-    // Validar email
     if (!formData.email) {
       newErrors.email = 'El email es requerido';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Email inválido';
     }
     
-    // Validar contraseña
     if (!formData.password) {
       newErrors.password = 'La contraseña es requerida';
     } else if (formData.password.length < 6) {
@@ -44,27 +51,58 @@ export default function Login() {
       ...prev,
       [name]: value
     }));
-    // Limpiar error del campo cuando el usuario escribe
+    
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
         [name]: ''
       }));
     }
+    
+    if (showError) {
+      setShowError(false);
+      setErrorMessage('');
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setShowError(false);
+    setErrorMessage('');
+    setIsLoading(true);
     
     if (validateForm()) {
-      const result = login(formData.email, formData.password);
-      if (result.success) {
-        navigate('/productos');
-      } else {
+      try {
+        console.log('🔐 Intentando login con:', formData.email);
+        
+        const result = await login(formData.email, formData.password);
+        console.log('📋 Resultado del login:', result);
+        
+        if (result.success) {
+          console.log('✅ Login exitoso, redirigiendo a productos...');
+          navigate('/productos');
+        } else {
+          if (result.error === "USER_NOT_FOUND") {
+            setErrorMessage('❌ No te encuentras registrado en nuestro sistema. Por favor regístrate primero.');
+          } else if (result.error === "INVALID_PASSWORD") {
+            setErrorMessage('❌ Contraseña incorrecta. Intenta nuevamente.');
+          } else {
+            setErrorMessage('❌ Error en el login. Intenta nuevamente.');
+          }
+          setShowError(true);
+          
+          console.error('🚨 ERROR DE LOGIN:', {
+            email: formData.email,
+            error: result.error
+          });
+        }
+      } catch (error) {
+        console.error('💥 Error en el proceso de login:', error);
+        setErrorMessage('❌ Error del sistema. Intenta más tarde.');
         setShowError(true);
       }
     }
+    setIsLoading(false);
   };
 
   return (
@@ -83,8 +121,31 @@ export default function Login() {
                 </div>
 
                 {showError && (
-                  <Alert variant="danger" onClose={() => setShowError(false)} dismissible>
-                    Credenciales incorrectas. Intenta nuevamente.
+                  <Alert 
+                    variant="danger" 
+                    onClose={() => setShowError(false)} 
+                    dismissible
+                    className="border-0 shadow-sm"
+                    style={{
+                      backgroundColor: '#fee2e2',
+                      borderLeft: '4px solid #dc2626',
+                      color: '#7f1d1d'
+                    }}
+                  >
+                    <div className="d-flex align-items-start">
+                      <span className="fw-bold me-2" style={{ fontSize: '1.2em' }}>⚠️</span>
+                      <div>
+                        <span className="fw-bold">{errorMessage}</span>
+                        {errorMessage.includes('registrado') && (
+                          <div className="mt-2">
+                            <small className="d-block mb-1">¿Eres nuevo en HuertoHogar?</small>
+                            <Link to="/registro" className="btn btn-sm btn-outline-danger">
+                              Crear Cuenta Gratis
+                            </Link>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </Alert>
                 )}
 
@@ -98,6 +159,7 @@ export default function Login() {
                       value={formData.email}
                       onChange={handleChange}
                       isInvalid={!!errors.email}
+                      disabled={isLoading}
                     />
                     <Form.Control.Feedback type="invalid">
                       {errors.email}
@@ -113,20 +175,35 @@ export default function Login() {
                       value={formData.password}
                       onChange={handleChange}
                       isInvalid={!!errors.password}
+                      disabled={isLoading}
                     />
                     <Form.Control.Feedback type="invalid">
                       {errors.password}
                     </Form.Control.Feedback>
                   </Form.Group>
 
-                  <Button type="submit" className="btn-verde w-100 mb-3">
-                    Iniciar Sesión
+                  <Button 
+                    type="submit" 
+                    className="btn-verde w-100 mb-3"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <>
+                        <span className="spinner-border spinner-border-sm me-2" />
+                        Iniciando sesión...
+                      </>
+                    ) : (
+                      'Iniciar Sesión'
+                    )}
                   </Button>
 
                   <div className="text-center">
                     <p className="mb-0">
-                      ¿No tienes cuenta? <Link to="/registro">Regístrate aquí</Link>
+                      ¿No tienes cuenta? <Link to="/registro" className="fw-bold text-success">Regístrate aquí</Link>
                     </p>
+                    <small className="text-muted mt-2 d-block">
+                      Usuario demo: demo@test.com / 123456
+                    </small>
                   </div>
                 </Form>
               </Card.Body>

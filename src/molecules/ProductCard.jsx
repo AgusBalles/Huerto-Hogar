@@ -4,50 +4,61 @@ import Button from '../atoms/Button';
 
 const ProductCard = ({ product, onAddToCart, onClick }) => {
   return (
-    <div 
-      onClick={onClick}
-      className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
-    >
-      <div className="h-48 bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-6xl relative">
-        {product.emoji}
-        {product.sustainable && (
-          <div className="absolute top-2 right-2">
-            <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-600 text-white">
-              Orgánico
-            </span>
-          </div>
-        )}
-      </div>
-      <div className="p-4">
-        <h3 className="text-xl font-bold text-gray-800 mb-2">{product.name}</h3>
-        <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
-        <div className="flex justify-between items-center mb-3">
-          <span className="text-2xl font-bold text-green-600">
-            ${product.price.toLocaleString()}
-          </span>
-          <span className="text-xs text-gray-500">
-            {product.stock} {product.unit}s
-          </span>
-        </div>
-        <Button 
-          onClick={(e) => {
-            e.stopPropagation();
-            onAddToCart(product);
-          }}
-          className="w-full"
-        >
-          <ShoppingCart size={18} /> Agregar
-        </Button>
+    <div className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col h-full">
+      {/* Imagen clickeable para detalles */}
+      <div 
+        onClick={() => onClick?.()}
+        className="h-40 bg-gray-50 flex items-center justify-center p-4 border-b border-gray-200 cursor-pointer hover:bg-gray-100"
+      >
+        <img 
+          src={product.image} 
+          alt={product.name}
+          className="object-contain"
+          style={{ maxWidth: '120px', maxHeight: '120px' }}
+        />
       </div>
       
-      <style jsx>{`
-        .line-clamp-2 {
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-        }
-      `}</style>
+      <div className="p-4 flex flex-col flex-grow">
+        {/* Título clickeable para detalles */}
+        <h3 
+          onClick={() => onClick?.()}
+          className="font-semibold text-gray-800 mb-2 text-base line-clamp-1 cursor-pointer hover:text-green-600"
+        >
+          {product.name}
+        </h3>
+        
+        <p className="text-gray-600 text-sm mb-3 line-clamp-2 flex-grow">
+          {product.description}
+        </p>
+        
+        <div className="flex justify-between items-center mb-3">
+          <span className="text-lg font-bold text-green-600">
+            ${product.price.toLocaleString()}
+          </span>
+          <div className="flex items-center gap-2">
+            {product.sustainable && (
+              <span className="px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">
+                Orgánico
+              </span>
+            )}
+            <span className="text-xs text-gray-500">
+              Stock: {product.stock}
+            </span>
+          </div>
+        </div>
+        
+        {/* Botón SOLO para agregar al carrito */}
+        <Button 
+          onClick={() => {
+            console.log('🛒 Agregando:', product.name);
+            onAddToCart(product);
+          }}
+          className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded flex items-center justify-center gap-2"
+        >
+          <ShoppingCart size={16} />
+          Agregar al carrito
+        </Button>
+      </div>
     </div>
   );
 };
