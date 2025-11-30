@@ -1,5 +1,5 @@
 // src/organisms/Navbar.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, User, LogOut, User as UserIcon, Package } from 'lucide-react';
 import { useCart } from '../context/CartContext';
@@ -12,14 +12,7 @@ const Navbar = () => {
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
 
-  // ✅ Inicializar dropdowns de Bootstrap
-  useEffect(() => {
-    const initBootstrap = async () => {
-      // Cargar JavaScript de Bootstrap
-      await import('bootstrap/dist/js/bootstrap.bundle.min.js');
-    };
-    initBootstrap();
-  }, []);
+
 
   const toggleCart = () => setIsCartOpen(!isCartOpen);
   const closeCart = () => setIsCartOpen(false);
@@ -30,9 +23,32 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    console.log('🚪 Cerrando sesión...');
-    logout();
-    navigate('/');
+    (async () => {
+      try {
+        console.log('🚪 [Navbar] Intentando cerrar sesión...');
+        await logout();
+
+        // Seguridad extra: eliminar cualquier key relacionada si queda alguna
+        try {
+          const toRemove = [];
+          for (let i = 0; i < localStorage.length; i++) {
+            const k = localStorage.key(i);
+            if (!k) continue;
+            const lk = k.trim().toLowerCase();
+            if (lk.includes('huerto') || lk.includes('session')) toRemove.push(k);
+          }
+          toRemove.forEach(k => localStorage.removeItem(k));
+        } catch (e) {
+          console.warn('No se pudieron limpiar keys adicionales en Navbar', e);
+        }
+
+        // Navegar y recargar para forzar estado limpio
+        navigate('/');
+        setTimeout(() => window.location.reload(), 80);
+      } catch (e) {
+        console.error('Error durante logout desde Navbar', e);
+      }
+    })();
   };
 
   const cartCount = getCartCount();

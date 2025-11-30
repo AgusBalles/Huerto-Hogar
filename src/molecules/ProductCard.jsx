@@ -4,17 +4,16 @@ import Button from '../atoms/Button';
 
 const ProductCard = ({ product, onAddToCart, onClick }) => {
   return (
-    <div className="card h-100 shadow-sm">
+    <div className="card h-100 shadow-sm product-card-compact">
       <div
         onClick={() => onClick?.()}
-        className="card-img-top d-flex align-items-center justify-content-center p-3 border-bottom" 
-        style={{ height: 160, cursor: 'pointer', backgroundColor: '#f8f9fa' }}
+        className="card-img-top product-image-box d-flex align-items-center justify-content-center p-2 border-bottom"
+        style={{ cursor: 'pointer' }}
       >
         <img
           src={product.image}
           alt={product.name}
-          className="img-fluid"
-          style={{ maxHeight: 130, objectFit: 'contain', width: 'auto' }}
+          className="product-image"
         />
       </div>
 

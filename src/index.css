@@ -39,6 +39,30 @@ body {
   color: var(--verde-principal) !important;
 }
 
+/* Ajustes globales para la barra superior: reducir altura y espaciado */
+.navbar {
+  padding-top: 0.35rem; /* menos espacio superior */
+  padding-bottom: 0.35rem; /* menos espacio inferior */
+  min-height: 48px; /* altura reducida en pantallas grandes */
+}
+
+.navbar .navbar-brand {
+  font-size: 1.35rem; /* marca un poco más pequeña para ahorrar espacio */
+}
+
+.navbar .nav-link {
+  padding: 0.35rem 0.6rem;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+  }
+  .navbar .navbar-brand { font-size: 1.2rem; }
+}
+
 .nav-link:hover {
   color: var(--verde-principal) !important;
 }
@@ -218,13 +242,50 @@ body {
 }
 
 .product-image-box {
-  height: 200px;
-  background: linear-gradient(135deg, var(--verde-principal) 0%, #22c55e 100%);
+  /* recuadro más alto para que la imagen pueda usar cover sin recortar demasiado */
+  height: 220px;
+  /* fondo neutro por si hay áreas transparentes o imágenes con espacio */
+  background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 4rem;
   position: relative;
+  overflow: hidden;
+}
+
+/* forzar que la imagen rellene el recuadro y así evitar mostrar el fondo */
+.product-image-box .product-image {
+  /* cubrir todo el recuadro: imagen rellena con cover para mantener nitidez */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  margin: 0;
+}
+
+/* Compact variant for product cards: smaller paddings, fonts and image area */
+.product-card-compact {
+  border-radius: 0.6rem;
+}
+
+.product-card-compact .card-body {
+  padding: 0.75rem;
+}
+
+.product-card-compact .card-title {
+  font-size: 1rem;
+  margin-bottom: 0.4rem;
+}
+
+.product-card-compact .card-text {
+  font-size: 13px;
+  margin-bottom: 0.6rem;
+}
+
+.product-card-compact .btn {
+  padding: 0.4rem 0.6rem;
+  font-size: 0.95rem;
 }
 
 .badge-organico {
@@ -381,13 +442,23 @@ body {
 .modal-product-image {
   width: 250px;
   height: 250px;
-  background: linear-gradient(135deg, var(--verde-principal) 0%, #22c55e 100%);
+  /* fondo neutro para evitar borde verde en el modal cuando la imagen es menor */
+  background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);
   border-radius: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 6rem;
   flex-shrink: 0;
+}
+
+/* Modal product image styling when an actual image is provided */
+.modal-product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  border-radius: 0.75rem;
 }
 
 .review-stars {

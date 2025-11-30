@@ -151,13 +151,36 @@ export function AuthProvider({ children }) {
   };
 
   // Función de logout MEJORADA
-  const logout = () => {
-    console.log('🚪 Cerrando sesión de:', user?.email);
+  const logout = async () => {
+    console.log('🚪 [AuthContext] Cerrando sesión de:', user?.email);
+    // Limpiar estado y almacenamiento
     setUser(null);
     setIsAuthenticated(false);
-    // Limpiar solo el usuario, mantener los usuarios registrados
-    localStorage.removeItem("huerto-user");
-    console.log('✅ Sesión cerrada, usuario removido de localStorage');
+    try {
+      localStorage.removeItem('huerto-user');
+    } catch (e) {}
+
+    // Intentar eliminar variaciones del key en localStorage (por si hay key con espacios o mayúsculas)
+    try {
+      const keysToRemove = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (!k) continue;
+        const lk = k.trim().toLowerCase();
+        if (lk === 'huerto-user' || lk.includes('huerto-user') || lk.includes('huerto_session') || lk.includes('huerto-session') || lk.includes('huerto-session-token')) {
+          keysToRemove.push(k);
+        }
+      }
+      keysToRemove.forEach(k => {
+        localStorage.removeItem(k);
+        console.log('🧹 [AuthContext] Removed localStorage key:', k);
+      });
+    } catch (e) {
+      console.warn('No se pudieron limpiar keys adicionales de localStorage', e);
+    }
+
+    // devolver control al llamador para que decida navegar/recargar
+    return true;
   };
 
   // Actualizar información del usuario

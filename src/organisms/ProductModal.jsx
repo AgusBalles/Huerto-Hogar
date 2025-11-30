@@ -19,7 +19,11 @@ export default function ProductModal({ product, isOpen, onClose, onAddToCart }) 
         <Row>
           <Col md={5}>
             <div className="modal-product-image">
-              {product.emoji}
+              {product.image ? (
+                <img src={product.image} alt={product.name} />
+              ) : (
+                product.emoji || null
+              )}
             </div>
           </Col>
           <Col md={7}>
@@ -62,7 +66,7 @@ export default function ProductModal({ product, isOpen, onClose, onAddToCart }) 
             ))}
           </div>
         )}
-      </Modal.Body>s
+      </Modal.Body>
     </Modal>
   );
 }

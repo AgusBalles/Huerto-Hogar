@@ -1,7 +1,7 @@
 // src/pages/Home.jsx
 import React, { useState } from 'react';
 import { Container } from 'react-bootstrap';
-import NavbarComponent from '../organisms/Navbar';
+import Navbar from '../organisms/Navbar';
 import Hero from '../organisms/Hero';
 import ProductGrid from '../organisms/ProductGrid';
 import CartSidebar from '../organisms/CartSidebar';
@@ -49,7 +49,7 @@ export default function Home() {
   
   return (
     <div>
-      <NavbarComponent 
+      <Navbar 
         cartCount={cartCount}
         onToggleCart={() => setCartOpen(!cartOpen)}
         onToggleLogin={() => alert('Login modal')}
