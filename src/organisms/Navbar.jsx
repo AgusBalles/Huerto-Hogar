@@ -1,7 +1,7 @@
 // src/organisms/Navbar.jsx
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, User, Search, LogOut, User as UserIcon, Package } from 'lucide-react';
+import { ShoppingCart, User, LogOut, User as UserIcon, Package } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import CartSidebar from './CartSidebar';
@@ -74,10 +74,6 @@ const Navbar = () => {
             </ul>
 
             <div className="d-flex gap-3 align-items-center">
-              <button className="btn btn-link text-dark p-2" aria-label="Buscar">
-                <Search size={20} />
-              </button>
-
               <button 
                 className="btn btn-link text-dark p-2 position-relative" 
                 onClick={toggleCart}
