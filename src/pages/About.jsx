@@ -4,13 +4,14 @@ import { Container, Row, Col, Card } from 'react-bootstrap';
 import NavbarComponent from '../organisms/Navbar';
 import Footer from '../organisms/Footer';
 import CartSidebar from '../organisms/CartSidebar';
+import LocationsMap from '../components/LocationsMap';
 
 export default function About() {
   return (
     <>
       <NavbarComponent />
       <CartSidebar />
-      
+
       <Container className="py-5" style={{ marginTop: '100px', minHeight: '70vh' }}>
         <Row className="mb-5">
           <Col>
@@ -67,12 +68,16 @@ export default function About() {
         <Row>
           <Col>
             <h3 className="fw-bold text-center mb-4">Nuestras Ubicaciones</h3>
-            <div className="d-flex flex-wrap justify-content-center gap-3">
-              {['Santiago', 'Puerto Montt', 'Villarica', 'Nacimiento', 'Viña del Mar', 'Valparaíso', 'Concepción'].map(city => (
-                <Card key={city} className="border-success" style={{ width: '150px' }}>
-                  <Card.Body className="text-center">
-                    <span className="me-2">📍</span>
-                    <strong>{city}</strong>
+            <div className="mb-4">
+              <LocationsMap />
+            </div>
+
+            <div className="d-flex flex-wrap justify-content-center gap-3 mt-3">
+              {[ 'Santiago', 'Valparaíso', 'Viña del Mar', 'Concepción', 'Puerto Montt' ].map(city => (
+                <Card key={city} className="border-success location-card" style={{ width: '150px' }}>
+                  <Card.Body className="location-card-body">
+                    <span className="location-pin" aria-hidden>📍</span>
+                    <span className="city-name">{city}</span>
                   </Card.Body>
                 </Card>
               ))}
