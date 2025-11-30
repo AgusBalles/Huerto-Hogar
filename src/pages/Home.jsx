@@ -9,9 +9,10 @@ import ProductModal from '../organisms/ProductModal';
 import Footer from '../organisms/Footer';
 import FilterButton from '../molecules/FilterButton';
 import { productsData } from '../molecules/data/products';
+import { useCart } from '../context/CartContext';
 
 export default function Home() {
-  const [cart, setCart] = useState([]);
+  const { cart, addToCart, updateQuantity, removeFromCart, clearCart } = useCart();
   const [cartOpen, setCartOpen] = useState(false);
   const [currentFilter, setCurrentFilter] = useState('all');
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -29,41 +30,13 @@ export default function Home() {
     ? productsData 
     : productsData.filter(p => p.category === currentFilter);
   
-  const addToCart = (product) => {
-    setCart(prev => {
-      const existing = prev.find(item => item.id === product.id);
-      if (existing) {
-        return prev.map(item => 
-          item.id === product.id 
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      }
-      return [...prev, { ...product, quantity: 1 }];
-    });
-  };
-  
-  const updateQuantity = (id, newQuantity) => {
-    if (newQuantity <= 0) {
-      removeFromCart(id);
-    } else {
-      setCart(prev => prev.map(item =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      ));
-    }
-  };
-  
-  const removeFromCart = (id) => {
-    setCart(prev => prev.filter(item => item.id !== id));
-  };
-  
   const handleCheckout = () => {
-    if (cart.length === 0) {
+    if (!cart || cart.length === 0) {
       alert('Tu carrito está vacío');
       return;
     }
     alert('¡Pedido realizado con éxito!');
-    setCart([]);
+    clearCart && clearCart();
     setCartOpen(false);
   };
   
@@ -72,7 +45,7 @@ export default function Home() {
     setModalOpen(true);
   };
   
-  const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const cartCount = (cart || []).reduce((sum, item) => sum + (item.quantity || 0), 0);
   
   return (
     <div>

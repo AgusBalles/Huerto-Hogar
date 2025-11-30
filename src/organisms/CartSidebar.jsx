@@ -1,18 +1,34 @@
 import React from 'react';
 import { X, ShoppingCart, Trash2, Plus, Minus } from "lucide-react";
 import Button from '../atoms/Button';
+import { useCart } from '../context/CartContext';
 
 const CartSidebar = ({ 
   isOpen, 
   onClose, 
   items = [], 
+  cart: cartProp, 
   onUpdateQuantity, 
   onRemove, 
   onCheckout,
   currentUser 
 }) => {
-  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+  // Fallback: si no vienen `items` ni `cartProp`, intentamos usar el contexto de forma segura
+  let cartContext = null;
+  try {
+    cartContext = useCart ? useCart() : null;
+  } catch (err) {
+    cartContext = null;
+  }
+  const effectiveItems = (items && items.length > 0)
+    ? items
+    : cartProp || (cartContext ? cartContext.cart : []);
+
+  const updateQtyFn = onUpdateQuantity || (cartContext && cartContext.updateQuantity);
+  const removeFn = onRemove || (cartContext && cartContext.removeFromCart);
+
+  const total = effectiveItems.reduce((sum, item) => sum + Number(item.price) * Number(item.quantity), 0);
+  const totalItems = effectiveItems.reduce((sum, item) => sum + Number(item.quantity), 0);
 
   return (
     <>
@@ -43,7 +59,7 @@ const CartSidebar = ({
         </div>
 
         {/* Items Count */}
-        {items.length > 0 && (
+        {effectiveItems.length > 0 && (
           <div className="px-3 py-2 bg-light border-bottom">
             <small className="text-success fw-semibold">
               {totalItems} {totalItems === 1 ? 'producto' : 'productos'} en tu carrito
@@ -53,7 +69,7 @@ const CartSidebar = ({
 
         {/* Cart Items */}
         <div className="cart-body">
-          {items.length === 0 ? (
+          {effectiveItems.length === 0 ? (
             <div className="d-flex flex-column align-items-center justify-content-center h-100 text-center px-3">
               <div style={{ fontSize: '4rem', opacity: 0.5 }}>🛒</div>
               <p className="text-muted h5 mb-2">Tu carrito está vacío</p>
@@ -64,12 +80,12 @@ const CartSidebar = ({
             </div>
           ) : (
             <div>
-              {items.map(item => (
+              {effectiveItems.map(item => (
                 <CartItemCard
                   key={item.id}
                   item={item}
-                  onUpdateQuantity={onUpdateQuantity}
-                  onRemove={onRemove}
+                  onUpdateQuantity={updateQtyFn}
+                  onRemove={removeFn}
                 />
               ))}
             </div>
@@ -77,7 +93,7 @@ const CartSidebar = ({
         </div>
 
         {/* Footer */}
-        {items.length > 0 && (
+        {effectiveItems.length > 0 && (
           <div className="cart-footer bg-light">
             {/* Subtotal */}
             <div className="mb-3">
@@ -130,13 +146,17 @@ const CartSidebar = ({
 
 // Componente individual de item del carrito
 const CartItemCard = ({ item, onUpdateQuantity, onRemove }) => {
-  const itemTotal = item.price * item.quantity;
+  const itemTotal = Number(item.price) * Number(item.quantity);
 
   return (
     <div className="cart-item">
-      {/* Product Emoji */}
-      <div className="cart-item-emoji flex-shrink-0">
-        {item.emoji}
+      {/* Product Thumbnail (image) */}
+      <div className="cart-item-img-wrap flex-shrink-0">
+        {item.image ? (
+          <img src={item.image} alt={item.name} className="cart-item-img" />
+        ) : (
+          <div className="cart-item-emoji">{item.emoji || '🛒'}</div>
+        )}
       </div>
 
       {/* Product Info */}

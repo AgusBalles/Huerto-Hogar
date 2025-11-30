@@ -1,6 +1,7 @@
 // src/organisms/Hero.jsx
 import React from 'react';
-import { Container, Row, Col, Button } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 export default function Hero() {
   return (
@@ -15,9 +16,9 @@ export default function Hero() {
               Productos frescos y orgánicos con más de 6 años de experiencia llevando 
               lo mejor del campo chileno a tu hogar.
             </p>
-            <Button className="btn-verde" size="lg">
+            <Link to="/productos" className="btn btn-verde btn-lg">
               Ver Productos
-            </Button>
+            </Link>
           </Col>
         </Row>
       </Container>

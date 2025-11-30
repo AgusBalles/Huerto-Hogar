@@ -7,9 +7,9 @@ export default function Footer() {
     <footer className="footer-custom">
       <Container className="text-center">
         <h3 className="mb-3">🌱 HuertoHogar</h3>
-        <p className="text-muted mb-3">Del campo directo a tu mesa</p>
-        <p className="small text-muted">
-          © 2024 HuertoHogar. Todos los derechos reservados.
+        <p className="mb-3 text-white">Del campo directo a tu mesa</p>
+        <p className="small text-white">
+          © 2025 HuertoHogar. Todos los derechos reservados.
         </p>
       </Container>
     </footer>

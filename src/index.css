@@ -112,23 +112,54 @@ body {
 /* Hero Section */
 .hero-section {
   padding-top: 120px;
-  padding-bottom: 80px;
-  min-height: 70vh;
+  padding-bottom: 140px; /* más espacio debajo para bajar "Nuestros Productos" */
+  min-height: 80vh; /* aumentar la altura del hero */
   display: flex;
   align-items: center;
+  position: relative;
+  overflow: hidden;
 }
 
 .hero-title {
   font-size: 3.5rem;
   font-weight: 700;
-  color: #1f2937;
+  color: white;
   margin-bottom: 1.5rem;
+  text-shadow: 0 6px 18px rgba(0,0,0,0.45);
 }
 
 .hero-text {
   font-size: 1.25rem;
-  color: #6b7280;
+  color: rgba(255,255,255,0.95);
   margin-bottom: 2rem;
+  text-shadow: 0 4px 10px rgba(0,0,0,0.35);
+}
+
+/* Fondo difuminado del hero usando imagen pública */
+.hero-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  /* primero un degradado para difuminar hacia el fondo blanco, luego la imagen */
+  background-image: linear-gradient(to bottom, rgba(255,255,255,0.0) 0%, rgba(248,249,250,0.92) 85%), url('/img/fondoInicio.png');
+  background-size: cover;
+  /* subir ligeramente el foco de la imagen para que destaque más arriba */
+  background-position: center top;
+  /* menos blur para que la imagen se note más, y un poco más brillante */
+  filter: blur(4px) brightness(0.72);
+  /* agrandar la imagen un poco más */
+  transform: scale(1.12);
+  z-index: 0;
+}
+
+.hero-section .container {
+  position: relative;
+  z-index: 2;
+}
+
+/* Ajuste para que el botón destaque sobre el fondo */
+.hero-section .btn-verde {
+  box-shadow: 0 6px 18px rgba(2,6,23,0.15);
 }
 
 /* Product Cards */
@@ -254,6 +285,24 @@ body {
 
 .cart-item-emoji {
   font-size: 2.5rem;
+}
+
+.cart-item-img-wrap {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
+  background-color: #f3f4f6;
+}
+
+.cart-item-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .cart-controls {
