@@ -1,5 +1,5 @@
 // src/pages/Products.jsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import Navbar from '../organisms/Navbar';
 import ProductGrid from '../organisms/ProductGrid';
@@ -8,6 +8,7 @@ import ProductModal from '../organisms/ProductModal';
 import Footer from '../organisms/Footer';
 import FilterButton from '../molecules/FilterButton';
 import { productsData } from '../molecules/data/products';
+import { getProductos } from '../api/productos';
 import { useCart } from '../context/CartContext';
 
 export default function Products() {
@@ -26,7 +27,24 @@ export default function Products() {
     { id: 'lacteos', label: 'Productos Lácteos', icon: '🥛' }
   ];
 
-  const filteredProducts = productsData.filter(product => {
+  const [productosApi, setProductosApi] = useState([]);
+
+  useEffect(() => {
+    let mounted = true;
+    getProductos()
+      .then(res => {
+        if (!mounted) return;
+        if (Array.isArray(res.data) && res.data.length > 0) setProductosApi(res.data);
+      })
+      .catch(() => {
+        // fallback to local products
+      });
+    return () => { mounted = false; };
+  }, []);
+
+  const dataSource = (productosApi && productosApi.length > 0) ? productosApi : productsData;
+
+  const filteredProducts = dataSource.filter(product => {
     const matchesCategory = currentFilter === 'all' || product.category === currentFilter;
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          product.description.toLowerCase().includes(searchQuery.toLowerCase());
