@@ -22,7 +22,11 @@ export default function Login() {
   React.useEffect(() => {
     if (user) {
       console.log('✅ Usuario ya autenticado, redirigiendo...');
-      navigate('/productos');
+      if (user.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/productos');
+      }
     }
   }, [user, navigate]);
 
@@ -79,8 +83,13 @@ export default function Login() {
         console.log('📋 Resultado del login:', result);
         
         if (result.success) {
-          console.log('✅ Login exitoso, redirigiendo a productos...');
-          navigate('/productos');
+          console.log('✅ Login exitoso, redirigiendo según rol...');
+          // Redirigir directamente según el rol devuelto por la función login
+          if (result.user && result.user.role === 'admin') {
+            navigate('/admin');
+          } else {
+            navigate('/productos');
+          }
         } else {
           if (result.error === "USER_NOT_FOUND") {
             setErrorMessage('❌ No te encuentras registrado en nuestro sistema. Por favor regístrate primero.');

@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Checkout from './pages/Checkout';
 import OrderHistory from './pages/OrderHistory';
+import AdminDashboard from './pages/AdminDashboard';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 
@@ -20,12 +21,17 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/productos" element={<Products />} />
+            <Route path="/products" element={<Products />} />
             <Route path="/nosotros" element={<About />} />
+            <Route path="/about" element={<About />} />
             <Route path="/contacto" element={<Contact />} />
+            <Route path="/contact" element={<Contact />} />
             <Route path="/login" element={<Login />} />
             <Route path="/registro" element={<Register />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/historial" element={<OrderHistory />} />
+            {/* Admin */}
+            <Route path="/admin" element={<AdminDashboard />} />
           </Routes>
         </Router>
       </CartProvider>

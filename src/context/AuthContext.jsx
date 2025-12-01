@@ -38,10 +38,20 @@ export function AuthProvider({ children }) {
         id: 1,
         name: "Usuario Demo",
         email: "demo@test.com",
-        password: "123456"
+        password: "123456",
+        role: 'user'
       };
-      setRegisteredUsers([demoUser]);
-      localStorage.setItem("huerto-registeredUsers", JSON.stringify([demoUser]));
+
+      const demoAdmin = {
+        id: 2,
+        name: "Admin Demo",
+        email: "admin@test.com",
+        password: "admin123",
+        role: 'admin'
+      };
+
+      setRegisteredUsers([demoUser, demoAdmin]);
+      localStorage.setItem("huerto-registeredUsers", JSON.stringify([demoUser, demoAdmin]));
     }
     
     setLoading(false);
@@ -83,6 +93,7 @@ export function AuthProvider({ children }) {
           id: foundUser.id,
           name: foundUser.name,
           email: foundUser.email,
+          role: foundUser.role || 'user'
         };
 
         setUser(userData);
@@ -122,7 +133,8 @@ export function AuthProvider({ children }) {
           id: Date.now(),
           name: name,
           email: email,
-          password: password
+          password: password,
+          role: 'user'
         };
 
         // Agregar a la lista de usuarios registrados
@@ -135,6 +147,7 @@ export function AuthProvider({ children }) {
           id: newUser.id,
           name: newUser.name,
           email: newUser.email,
+          role: newUser.role
         };
 
         setUser(userData);

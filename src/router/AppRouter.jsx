@@ -9,6 +9,7 @@ import Register from '../pages/Register';
 import About from '../pages/About';
 import Contact from '../pages/Contact';
 import OrderHistory from '../pages/OrderHistory';
+import AdminDashboard from '../pages/AdminDashboard';
 import { productsData } from '../data/products';
 
 const AppRouter = () => {
@@ -99,13 +100,20 @@ const AppRouter = () => {
       <Routes>
         <Route path="/" element={<Home {...sharedProps} />} />
         <Route path="/products" element={<Products {...sharedProps} />} />
+        {/* Alias en español para enlaces en la UI */}
+        <Route path="/productos" element={<Products {...sharedProps} />} />
         <Route path="/cart" element={<Cart {...sharedProps} />} />
         <Route path="/checkout" element={<Checkout {...sharedProps} />} />
         <Route path="/login" element={<Login {...sharedProps} />} />
         <Route path="/register" element={<Register {...sharedProps} />} />
         <Route path="/about" element={<About {...sharedProps} />} />
+        <Route path="/nosotros" element={<About {...sharedProps} />} />
         <Route path="/contact" element={<Contact {...sharedProps} />} />
+        <Route path="/contacto" element={<Contact {...sharedProps} />} />
         <Route path="/order-history" element={<OrderHistory {...sharedProps} />} />
+        <Route path="/historial" element={<OrderHistory {...sharedProps} />} />
+        {/* Admin */}
+        <Route path="/admin" element={<AdminDashboard {...sharedProps} />} />
       </Routes>
 
       {/* Notificaciones globales */}

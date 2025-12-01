@@ -133,6 +133,17 @@ const Navbar = () => {
                         Mi Perfil
                       </Link>
                     </li>
+                      {currentUser?.role === 'admin' && (
+                        <>
+                          <li>
+                            <Link className="dropdown-item d-flex align-items-center" to="/admin">
+                              <Package size={16} className="me-2" />
+                              Panel Admin
+                            </Link>
+                          </li>
+                          <li><hr className="dropdown-divider" /></li>
+                        </>
+                      )}
                     <li>
                       <Link className="dropdown-item d-flex align-items-center" to="/historial">
                         <Package size={16} className="me-2" />
