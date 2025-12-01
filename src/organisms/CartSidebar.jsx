@@ -2,6 +2,8 @@ import React from 'react';
 import { X, ShoppingCart, Trash2, Plus, Minus } from "lucide-react";
 import Button from '../atoms/Button';
 import { useCart } from '../context/CartContext';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const CartSidebar = ({ 
   isOpen, 
@@ -29,6 +31,30 @@ const CartSidebar = ({
 
   const total = effectiveItems.reduce((sum, item) => sum + Number(item.price) * Number(item.quantity), 0);
   const totalItems = effectiveItems.reduce((sum, item) => sum + Number(item.quantity), 0);
+
+  const navigate = useNavigate();
+  let auth = null;
+  try {
+    auth = useAuth();
+  } catch (e) {
+    auth = null;
+  }
+
+  const handleFinalize = () => {
+    const isAuth = auth ? auth.isAuthenticated : (currentUser ? true : false);
+    if (!isAuth) {
+      // Close the cart and redirect to login
+      onClose && onClose();
+      navigate('/login');
+      return;
+    }
+
+    if (typeof onCheckout === 'function') {
+      onCheckout();
+    } else {
+      navigate('/checkout');
+    }
+  };
 
   return (
     <>
@@ -115,7 +141,7 @@ const CartSidebar = ({
             {/* Action Buttons */}
             <div className="d-grid gap-2">
               <button 
-                onClick={onCheckout} 
+                onClick={handleFinalize} 
                 className="btn btn-amarillo btn-lg d-flex align-items-center justify-content-center gap-2"
               >
                 <ShoppingCart size={20} />
