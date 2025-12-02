@@ -512,7 +512,20 @@ body {
 .admin-dashboard .stat-card.bg-success { background: linear-gradient(90deg,#0b6b2d,#16a34a); } /* deep green */
 .admin-dashboard .stat-card.bg-success-2 { background: linear-gradient(90deg,#198754,#1e7e34); } /* alternate green */
 .admin-dashboard .stat-card.bg-warning { background: linear-gradient(90deg,#ffd54a,#ffc107); }
-.admin-dashboard .stat-icon { color: rgba(255,255,255,0.95); display:flex; align-items:center; justify-content:center; }
+.admin-dashboard .stat-icon {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(2,6,23,0.08);
+}
+
+.admin-dashboard .stat-icon svg {
+  display:block;
+}
 .admin-dashboard .stat-value { font-weight:700; }
 .admin-dashboard .table thead th { font-weight:600; }
 .admin-dashboard h2 { color: #0f5132; }

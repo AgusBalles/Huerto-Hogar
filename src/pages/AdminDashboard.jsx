@@ -3,9 +3,9 @@ import { Container, Row, Col, Card } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext';
 import { getTotalOrders, getTotalRevenue, getAverageOrderValue, salesData } from '../data/sales';
 import { useNavigate } from 'react-router-dom';
-import { ShoppingCart, Box, Users } from 'lucide-react';
+import { ShoppingCart, Box, Users, ClipboardList, Tag, User, BarChart2, Home } from 'lucide-react';
 
-export default function AdminDashboard() {
+export default function AdminDashboard(props) {
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -15,9 +15,24 @@ export default function AdminDashboard() {
     }
   }, [user, navigate]);
 
+  const handleBack = () => {
+    // If there is history, go back; otherwise go to products as safe default
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate('/productos');
+    }
+  };
+
   const totalOrders = getTotalOrders(salesData);
   const totalRevenue = getTotalRevenue(salesData);
   const avgOrder = getAverageOrderValue(salesData);
+
+  const notify = (msg, type = 'info') => {
+    if (props && typeof props.showNotification === 'function') return props.showNotification(msg, type);
+    // fallback
+    alert(msg);
+  };
 
   return (
     <Container className="py-5 admin-dashboard" style={{ marginTop: '90px' }}>
@@ -37,8 +52,8 @@ export default function AdminDashboard() {
         <Col md={4}>
           <Card className="shadow-sm stat-card bg-success text-white">
             <Card.Body className="d-flex align-items-center gap-3">
-              <div className="stat-icon bg-white bg-opacity-15 p-3 rounded-circle">
-                <ShoppingCart size={28} />
+              <div className="stat-icon">
+                <ShoppingCart size={28} color="#0b6b2d" />
               </div>
               <div>
                 <Card.Title className="mb-1 text-white small">Compras</Card.Title>
@@ -52,8 +67,8 @@ export default function AdminDashboard() {
         <Col md={4}>
           <Card className="shadow-sm stat-card bg-success-2 text-white">
             <Card.Body className="d-flex align-items-center gap-3">
-              <div className="stat-icon bg-white bg-opacity-15 p-3 rounded-circle">
-                <Box size={28} />
+              <div className="stat-icon">
+                <Box size={28} color="#0b6b2d" />
               </div>
               <div>
                 <Card.Title className="mb-1 text-white small">Productos</Card.Title>
@@ -67,8 +82,8 @@ export default function AdminDashboard() {
         <Col md={4}>
           <Card className="shadow-sm stat-card bg-warning text-dark">
             <Card.Body className="d-flex align-items-center gap-3">
-              <div className="stat-icon bg-white bg-opacity-15 p-3 rounded-circle">
-                <Users size={28} />
+              <div className="stat-icon">
+                <Users size={28} color="#9a4b03" />
               </div>
               <div>
                 <Card.Title className="mb-1 small">Usuarios</Card.Title>
@@ -106,6 +121,47 @@ export default function AdminDashboard() {
                     ))}
                   </tbody>
                 </table>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+
+      <Row className="mt-4">
+        <Col>
+          <Card className="shadow-sm">
+            <Card.Body>
+              <Card.Title>Accesos rápidos</Card.Title>
+              <div className="d-flex flex-wrap gap-3 mt-3">
+                <button className="quick-tile" onClick={() => navigate('/order-history')}>
+                  <div className="tile-icon"><ClipboardList size={20} /></div>
+                  <div>Órdenes</div>
+                </button>
+
+                <button className="quick-tile" onClick={() => navigate('/productos')}>
+                  <div className="tile-icon"><Box size={20} /></div>
+                  <div>Productos</div>
+                </button>
+
+                <button className="quick-tile" onClick={() => notify('Sección Categorías no implementada aún','info')}>
+                  <div className="tile-icon"><Tag size={20} /></div>
+                  <div>Categorías</div>
+                </button>
+
+                <button className="quick-tile" onClick={() => notify('Sección Usuarios no implementada aún','info')}>
+                  <div className="tile-icon"><User size={20} /></div>
+                  <div>Usuarios</div>
+                </button>
+
+                <button className="quick-tile" onClick={() => notify('Reportes no disponible aún','info')}>
+                  <div className="tile-icon"><BarChart2 size={20} /></div>
+                  <div>Reportes</div>
+                </button>
+
+                <button className="quick-tile" onClick={() => navigate('/profile') }>
+                  <div className="tile-icon"><Home size={20} /></div>
+                  <div>Perfil</div>
+                </button>
               </div>
             </Card.Body>
           </Card>
