@@ -16,7 +16,16 @@ export default function AdminDashboard(props) {
   }, [user, navigate]);
 
   const handleBack = () => {
-    // If there is history, go back; otherwise go to products as safe default
+    try {
+      const afterLogin = sessionStorage.getItem('afterLogin');
+      if (afterLogin === 'admin') {
+        sessionStorage.removeItem('afterLogin');
+        navigate('/productos');
+        return;
+      }
+    } catch (e) {
+    }
+
     if (window.history.length > 1) {
       navigate(-1);
     } else {
@@ -37,8 +46,8 @@ export default function AdminDashboard(props) {
   return (
     <Container className="py-5 admin-dashboard" style={{ marginTop: '90px' }}>
       <div className="d-flex align-items-start justify-content-between mb-4">
-        <div className="d-flex align-items-center gap-3">
-          <button className="btn btn-outline-verde me-2" onClick={() => navigate(-1)} aria-label="Volver">
+          <div className="d-flex align-items-center gap-3">
+          <button className="btn btn-outline-verde me-2" onClick={handleBack} aria-label="Volver">
             ← Volver
           </button>
           <div>
@@ -87,8 +96,8 @@ export default function AdminDashboard(props) {
               </div>
               <div>
                 <Card.Title className="mb-1 small">Usuarios</Card.Title>
-                <div className="stat-value h3 mb-0">890</div>
-                <small className="d-block text-dark-50">Nuevos este mes: 120</small>
+                <div className="stat-value h3 mb-0">40</div>
+                <small className="d-block text-dark-50">Nuevos este mes: 20</small>
               </div>
             </Card.Body>
           </Card>
@@ -134,32 +143,32 @@ export default function AdminDashboard(props) {
               <Card.Title>Accesos rápidos</Card.Title>
               <div className="d-flex flex-wrap gap-3 mt-3">
                 <button className="quick-tile" onClick={() => navigate('/order-history')}>
-                  <div className="tile-icon"><ClipboardList size={20} /></div>
+                  <div className="tile-icon"><ClipboardList size={16} /></div>
                   <div>Órdenes</div>
                 </button>
 
                 <button className="quick-tile" onClick={() => navigate('/productos')}>
-                  <div className="tile-icon"><Box size={20} /></div>
+                  <div className="tile-icon"><Box size={16} /></div>
                   <div>Productos</div>
                 </button>
 
                 <button className="quick-tile" onClick={() => notify('Sección Categorías no implementada aún','info')}>
-                  <div className="tile-icon"><Tag size={20} /></div>
+                  <div className="tile-icon"><Tag size={16} /></div>
                   <div>Categorías</div>
                 </button>
 
                 <button className="quick-tile" onClick={() => notify('Sección Usuarios no implementada aún','info')}>
-                  <div className="tile-icon"><User size={20} /></div>
+                  <div className="tile-icon"><User size={16} /></div>
                   <div>Usuarios</div>
                 </button>
 
                 <button className="quick-tile" onClick={() => notify('Reportes no disponible aún','info')}>
-                  <div className="tile-icon"><BarChart2 size={20} /></div>
+                  <div className="tile-icon"><BarChart2 size={16} /></div>
                   <div>Reportes</div>
                 </button>
 
                 <button className="quick-tile" onClick={() => navigate('/profile') }>
-                  <div className="tile-icon"><Home size={20} /></div>
+                  <div className="tile-icon"><Home size={16} /></div>
                   <div>Perfil</div>
                 </button>
               </div>

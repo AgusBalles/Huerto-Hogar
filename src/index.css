@@ -537,3 +537,42 @@ body {
 @media (max-width: 768px) {
   .admin-dashboard .stat-value { font-size: 1.25rem; }
 }
+
+/* Compact quick tiles for Admin dashboard */
+.admin-dashboard .quick-tile {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 68px;
+  height: 64px;
+  border: 1px solid rgba(0,0,0,0.55);
+  background: #fff;
+  border-radius: 6px;
+  padding: 6px 4px;
+  font-size: 0.78rem;
+  color: #111827;
+  cursor: pointer;
+  transition: all 0.12s ease-in-out;
+}
+.admin-dashboard .quick-tile:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(2,6,23,0.06);
+}
+.admin-dashboard .quick-tile .tile-icon {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:28px;
+  height:28px;
+  margin-bottom:4px;
+}
+.admin-dashboard .quick-tile .tile-icon svg {
+  display:block;
+}
+.admin-dashboard .quick-tile small {
+  font-size:0.68rem;
+}
+.admin-dashboard .d-flex.flex-wrap.gap-3 .quick-tile { /* tighten spacing when wrapping */
+  margin-right: 6px;
+}

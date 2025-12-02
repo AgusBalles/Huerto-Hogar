@@ -86,6 +86,8 @@ export default function Login() {
           console.log('✅ Login exitoso, redirigiendo según rol...');
           // Redirigir directamente según el rol devuelto por la función login
           if (result.user && result.user.role === 'admin') {
+            // marcar que venimos del login para que el botón "Volver" no regrese al login (evita bucle)
+            try { sessionStorage.setItem('afterLogin', 'admin'); } catch(e) {}
             navigate('/admin');
           } else {
             navigate('/productos');
