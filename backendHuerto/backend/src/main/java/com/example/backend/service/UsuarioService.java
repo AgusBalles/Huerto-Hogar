@@ -83,11 +83,17 @@ public class UsuarioService {
         return usuarioRepository.count();
     }
 
+    // ⭐ MANTENER - Método de login (útil para validación)
     public Usuario login(String email, String contrasena) {
         Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
         if (usuario.isPresent() && passwordEncoder.matches(contrasena, usuario.get().getContrasena())) {
             return usuario.get();
         }
         throw new RuntimeException("Credenciales incorrectas");
+    }
+
+    // ⭐ NUEVO - Validar contraseña
+    public boolean validarContrasena(String contrasenaRaw, String contrasenaEncriptada) {
+        return passwordEncoder.matches(contrasenaRaw, contrasenaEncriptada);
     }
 }

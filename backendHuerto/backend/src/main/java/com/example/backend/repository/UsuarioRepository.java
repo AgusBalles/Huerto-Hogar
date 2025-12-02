@@ -12,15 +12,15 @@ import java.util.Optional;
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
+    // ⭐ Buscar por email
     Optional<Usuario> findByEmail(String email);
 
+    // ⭐ Verificar si existe por email
     boolean existsByEmail(String email);
 
-    List<Usuario> findByNombreCompletoContainingIgnoreCase(String nombreCompleto);
-
-    @Query("SELECT u FROM Usuario u WHERE LOWER(u.nombreCompleto) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR LOWER(u.email) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+    // Búsqueda por nombre o email
+    @Query("SELECT u FROM Usuario u WHERE " +
+            "LOWER(u.nombreCompleto) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(u.email) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
     List<Usuario> searchByNombreOrEmail(@Param("searchTerm") String searchTerm);
-
-    @Query("SELECT u FROM Usuario u ORDER BY u.nombreCompleto ASC")
-    List<Usuario> findAllOrderByNombreAsc();
 }
